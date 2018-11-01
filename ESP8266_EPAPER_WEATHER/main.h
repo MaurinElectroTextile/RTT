@@ -12,8 +12,8 @@
 #include <GxIO/GxIO_SPI/GxIO_SPI.h>
 #include <GxIO/GxIO.h>
 
-#include <Fonts/DSDIGIT9pt7b.h>
-#include <Fonts/DSDIGIT30pt7b.h>
+#include "Fonts/DSDIGIT9pt7b.h"
+#include "Fonts/DSDIGIT30pt7b.h"
 
 #include "imagedata.h"
 
