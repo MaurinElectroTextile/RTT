@@ -2,7 +2,7 @@
 
 void setup() {
   Serial.begin(115200);
-  //Serial.setDebugOutput(true);
+  //Serial.setDebugOutput(true);  
 
   if (!configWiFi()) {
     Serial.println("ERROR: configESP");
@@ -64,7 +64,7 @@ void requestWeatherInfo() {
 
   /* Connect & Request */
   String url = String("/data/2.5/weather?q=") + String(REGION) + String(",") + String(COUNTRY) + String("&units=metric&appid=") + String(APPID);
-  if (!httpClient.begin("api.openweathermap.org", 80, url.c_str())) {
+  if (!httpClient.begin("api.openweathermap.org", 443, url.c_str()), true) {
     Serial.println("ERROR: HTTPClient.begin");
     return;
   }
@@ -124,7 +124,6 @@ void parseWeatherJson(String buffer) {
     Serial.printf("Weather: %s\r\n", weather);
     
     /* Draw EPD */
-    /*
     drawBackgroundImage();
     drawWeatherIcon(conditionId);
     drawText(110, 80, String(temp, 1).c_str(), &DSDIGIT30pt7b);
@@ -141,7 +140,7 @@ void parseWeatherJson(String buffer) {
     drawText("\r\n  Wind Direction: ");
     drawText(String(direction).c_str());
     showDisplay();
-    */
+    
   }
   else {
     Serial.println("jsonBuffer.parseObject failed");

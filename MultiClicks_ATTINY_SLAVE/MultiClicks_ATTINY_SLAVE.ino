@@ -27,15 +27,15 @@
 elapsedMillis timer;
 elapsedMillis timerLed;
 
-//#define I2C_BUS_PIN         2     // Bus PIN
+//#define I2C_BUS_PIN       2     // Bus PIN
 #define I2C_SLAVE_ADDR      0x27  // I2C slave address
 #define LED_PIN             1     // Bus PIN
 
 #define PIEZO_PIN_INPUT     5     // Piezo input PIN
-#define PIEZO_PIN_GND       4     // Piezo GND PIN
-#define THRESHOLD           5     // Threshold for the piezo analog readings
+#define THRESHOLD           10    // Threshold for the piezo analog readings
 #define DEBOUNCE_TIME       20    // Debounce time to avoid parasitics impuls
 #define TIME_OUT            500   // Timeout to output the hits sum     
+#define LATCH_PIN           3     // Timeout to output the hits sum     
 
 boolean piezoState = false;
 boolean lastPiezoState = false;
@@ -47,10 +47,7 @@ int del = 0;
 
 ///////////////////////// SETUP
 void setup() {
-  TinyWireS.begin(I2C_SLAVE_ADDR);
-
-  pinMode(PIEZO_PIN_GND, OUTPUT);
-  digitalWrite(PIEZO_PIN_GND, LOW);
+  //TinyWireS.begin(I2C_SLAVE_ADDR);
 
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);
@@ -68,7 +65,6 @@ void loop() {
     piezoState = HIGH;
     digitalWrite(LED_PIN, HIGH);
     delay(100);
-
   }
   else {
     piezoState = LOW;
