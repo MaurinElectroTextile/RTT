@@ -1,21 +1,31 @@
 #include "display.h"
 
-void Draw_EPD(weather_t* weather_ptr) {
+GxIO_Class io(SPI, SS, 0, 2);
+GxEPD_Class display(io);
+
+/* Initialize GxEPD library */
+void initDisplay() {
+  display.init();
+}
+
+//void Draw_EPD(weather_t* weatherInfos) {
+void Draw_EPD() {
+
   drawBackgroundImage();
-  drawWeatherIcon(weather_ptr->conditionId);
-  drawText(110, 80, String(weather_ptr->temp, 1).c_str(), &DSDIGIT30pt7b);
-  drawText(5, 115, String(weather_ptr->weatherName).c_str(), &DSDIGIT9pt7b);
+  drawWeatherIcon(weatherInfos.conditionId);
+  drawText(110, 80, String(weatherInfos.temp, 1).c_str(), &DSDIGIT30pt7b);
+  drawText(5, 115, String(weatherInfos.weatherName).c_str(), &DSDIGIT9pt7b);
   drawText("\r\n  Humidity: ");
-  drawText(String(weather_ptr->humidity).c_str());
+  drawText(String(weatherInfos.humidity).c_str());
   drawText("%");
   drawText("\r\n  Min Temp: ");
-  drawText(String(weather_ptr->temp_min).c_str());
+  drawText(String(weatherInfos.temp_min).c_str());
   drawText(" ,Max Temp: ");
-  drawText(String(weather_ptr->temp_max).c_str());
+  drawText(String(weatherInfos.temp_max).c_str());
   drawText("\r\n  Wind Speed: ");
-  drawText(String(weather_ptr->windSpeed).c_str());
+  drawText(String(weatherInfos.windSpeed).c_str());
   drawText("\r\n  Wind Direction: ");
-  drawText(String(weather_ptr->windDirection).c_str());
+  drawText(String(weatherInfos.windDirection).c_str());
   showDisplay();
 }
 
@@ -47,7 +57,7 @@ void drawWeatherIcon(int conditionId) {
   else {
     bitmap = SUNNY;
   }
-  display.drawBitmap(bitmap, 14, 14, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_normal);
+  display.drawBitmap(bitmap, 14, 14, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, GxEPD_WIGHT, GxEPD::bm_normal);
 }
 
 void drawBackgroundImage() {

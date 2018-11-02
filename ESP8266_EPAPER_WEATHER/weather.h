@@ -5,8 +5,12 @@
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
 
-String JsonStr;
-DynamicJsonBuffer jsonBuffer;
+extern String JsonStr;
+extern DynamicJsonBuffer jsonBuffer;
+
+#define REGION        "paris"
+#define COUNTRY       "fr"
+#define APPID         "2754590248e99a371c9a0f245a6d9d50"
 
 typedef struct weather {
   double temp;
@@ -21,10 +25,10 @@ typedef struct weather {
   String _time;
 } weather_t;
 
-weather_t weatherInfos;
+extern weather_t weatherInfos;
 
 boolean requestWeatherInfo();
-void parseWeatherJson(String buffer, weather_t* weatherPtr);
+void parseWeatherJson(String buffer);
 boolean requestWeatherForecastInfo();
 void parseWeatherForecastJson(String buffer, weather_t* weatherPtr);
 

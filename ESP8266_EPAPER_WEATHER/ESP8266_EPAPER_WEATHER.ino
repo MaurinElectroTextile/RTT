@@ -7,42 +7,29 @@
 #include "display.h"
 
 // #define WIFI_SSID     "Chevrette"
-// #define WIFI_PWD      "ch0c0latchienjaune"
-
-// #define WIFI_SSID     "Chateau_Chirac"
-// #define WIFI_PWD      "Chirac_2014"
+// #define WIFI_PWD      "PASS"
 
 #define WIFI_SSID     "Flying-Phone-N"
 #define WIFI_PWD      "salami42"
 
-#define REGION        "paris"
-#define COUNTRY       "fr"
-#define APPID         "2754590248e99a371c9a0f245a6d9d50"
-
-#define REQ_INTERVAL_SEC  60
-
-#define WEATHER_ICON_WIDTH  72
-#define WEATHER_ICON_HEIGHT 72
+#define REQ_INTERVAL_SEC  20
 
 bool requestFlag = false;
 Ticker ticker;
-String JsonStr;
-DynamicJsonBuffer jsonBuffer;
 
-/* 
-BUSY    D2-GPIO4
-RST     D4-GPIO2
-DC      D3-GPIO0
-CS      D1-GPIO5 (I've changed CS pin from GPIO15 to GPIO5 as Waveshare EPD makes GPIO15 high when NodeMCU restarts).
-CLK     D5-GPIO14
-DIN     D7-GPIO13
-GND     GND
-3.3V    3.3V 
+/*
+  BUSY    D2-GPIO4
+  RST     D4-GPIO2
+  DC      D3-GPIO0
+  CS      D1-GPIO5 (I've changed CS pin from GPIO15 to GPIO5 as Waveshare EPD makes GPIO15 high when NodeMCU restarts).
+  CLK     D5-GPIO14
+  DIN     D7-GPIO13
+  GND     GND
+  3.3V    3.3V
 */
 
 void tickerHandler();
 bool configWiFi();
-
 
 void setup() {
   Serial.begin(115200);
@@ -54,28 +41,28 @@ void setup() {
   }
 
   /* Initialize GxEPD library */
-  display.init();
+  initDisplay();
 
-  /* Set ticker as 10 minutes */
+  /* Set ticker as 1 minutes */
   ticker.attach(REQ_INTERVAL_SEC, tickerHandler);
 
   /* Get weather information */
-  requestWeatherInfo();
-  delay(3000);
-  requestWeatherForecastInfo();
+  // requestWeatherInfo();
+  // delay(3000);
+  // requestWeatherForecastInfo();
 }
 
 void loop() {
   /* Every 10 minutes */
   if (requestFlag) {
-    if ( requestWeatherInfo() ) {
-      Draw_EPD(&weatherInfos);
+    if ( requestWeatherInfo() ) {   // Get weather information
+      Draw_EPD();
     }
     delay(3000);
-    if ( requestWeatherForecastInfo() ) {
-      Draw_EPD(&weatherInfos);
-      requestFlag = false;
+    if ( requestWeatherForecastInfo() ) { // Get forecast weather information
+      Draw_EPD();
     }
+    requestFlag = false;
   }
 }
 
