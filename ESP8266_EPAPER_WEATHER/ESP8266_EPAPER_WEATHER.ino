@@ -1,8 +1,52 @@
-#include "main.h"
+#include <Ticker.h>
+#include <ESP8266WiFi.h>
+
+#include "weather.h"
+#include "energy.h"
+#include "imagedata.h"
+#include "display.h"
+
+// #define WIFI_SSID     "Chevrette"
+// #define WIFI_PWD      "ch0c0latchienjaune"
+
+// #define WIFI_SSID     "Chateau_Chirac"
+// #define WIFI_PWD      "Chirac_2014"
+
+#define WIFI_SSID     "Flying-Phone-N"
+#define WIFI_PWD      "salami42"
+
+#define REGION        "paris"
+#define COUNTRY       "fr"
+#define APPID         "2754590248e99a371c9a0f245a6d9d50"
+
+#define REQ_INTERVAL_SEC  60
+
+#define WEATHER_ICON_WIDTH  72
+#define WEATHER_ICON_HEIGHT 72
+
+bool requestFlag = false;
+Ticker ticker;
+String JsonStr;
+DynamicJsonBuffer jsonBuffer;
+
+/* 
+BUSY    D2-GPIO4
+RST     D4-GPIO2
+DC      D3-GPIO0
+CS      D1-GPIO5 (I've changed CS pin from GPIO15 to GPIO5 as Waveshare EPD makes GPIO15 high when NodeMCU restarts).
+CLK     D5-GPIO14
+DIN     D7-GPIO13
+GND     GND
+3.3V    3.3V 
+*/
+
+void tickerHandler();
+bool configWiFi();
+
 
 void setup() {
   Serial.begin(115200);
-  //Serial.setDebugOutput(true);  
+  //Serial.setDebugOutput(true);
 
   if (!configWiFi()) {
     Serial.println("ERROR: configESP");
@@ -24,10 +68,14 @@ void setup() {
 void loop() {
   /* Every 10 minutes */
   if (requestFlag) {
-    requestWeatherInfo();
+    if ( requestWeatherInfo() ) {
+      Draw_EPD(&weatherInfos);
+    }
     delay(3000);
-    requestWeatherForecastInfo();
-    requestFlag = false;
+    if ( requestWeatherForecastInfo() ) {
+      Draw_EPD(&weatherInfos);
+      requestFlag = false;
+    }
   }
 }
 
@@ -43,234 +91,13 @@ bool configWiFi() {
     Serial.println("ERROR: WiFi.begin");
     return false;
   }
-
   Serial.println("OK: WiFi.begin");
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(100);
     Serial.print(".");
   }
-
   Serial.println();
   Serial.println("OK: WiFi connected");
-
   return true;
-}
-
-/////////////////////////////////// RequestWeatherInfo
-void requestWeatherInfo() {
-  HTTPClient httpClient;
-  httpClient.setTimeout(2000);
-
-  /* Connect & Request */
-  String url = String("/data/2.5/weather?q=") + String(REGION) + String(",") + String(COUNTRY) + String("&units=metric&appid=") + String(APPID);
-  if (!httpClient.begin("api.openweathermap.org", 443, url.c_str()), true) {
-    Serial.println("ERROR: HTTPClient.begin");
-    return;
-  }
-  Serial.println("OK: HTTPClient.begin");
-
-  int httpCode = httpClient.GET();
-
-  /* Check response */
-  if (httpCode > 0) {
-    Serial.printf("[HTTP] request from the client was handled: %d\n", httpCode);
-    String payload = httpClient.getString();
-    parseWeatherJson(payload);
-  }
-  else {
-    Serial.printf("[HTTP] connection failed: %s\n", httpClient.errorToString(httpCode).c_str());
-  }
-  httpClient.end();
-}
-
-
-/////////////////////////////////// ParseWeatherJson
-void parseWeatherJson(String buffer) {
-  int JsonStartIndex = buffer.indexOf('{');
-  int JsonLastIndex = buffer.lastIndexOf('}');
-
-  /* Substring JSON string */
-  JsonStr = buffer.substring(JsonStartIndex, JsonLastIndex + 1);
-  Serial.println("PARSE JSON WEATHER INFORMATION: " + JsonStr);
-
-  /* Clear buffer */
-  jsonBuffer.clear();
-
-  /* Parse JSON string */
-  JsonObject& root = jsonBuffer.parseObject(JsonStr);
-
-  if (root.success()) {
-    /* Get information */
-    double temp = root["main"]["temp"];
-    int humidity = root["main"]["humidity"];
-    int temp_min = root["main"]["temp_min"];
-    int temp_max = root["main"]["temp_max"];
-    int speed = root["wind"]["speed"];
-    int direction = root["wind"]["direction"];
-    int conditionId = root["weather"][0]["id"];
-    const char* name = root["name"];
-    const char* weather = parseWeatherCondition(conditionId);
-
-    /* Serial Output */
-    Serial.printf("Temp: %3.1f\r\n", temp);
-    Serial.printf("Humidity: %d\r\n", humidity);
-    Serial.printf("Min. Temp: %d\r\n", temp_min);
-    Serial.printf("Max. Temp: %d\r\n", temp_max);
-    Serial.printf("Wind Speed: %d\r\n", speed);
-    Serial.printf("Wind Direction: %d\r\n", direction);
-    Serial.printf("ConditionId: %d\r\n", conditionId);
-    Serial.printf("Name: %s\r\n", name);
-    Serial.printf("Weather: %s\r\n", weather);
-    
-    /* Draw EPD */
-    drawBackgroundImage();
-    drawWeatherIcon(conditionId);
-    drawText(110, 80, String(temp, 1).c_str(), &DSDIGIT30pt7b);
-    drawText(5, 115, String(name).c_str(), &DSDIGIT9pt7b);
-    drawText("\r\n  Humidity: ");
-    drawText(String(humidity).c_str());
-    drawText("%");
-    drawText("\r\n  Min Temp: ");
-    drawText(String(temp_min).c_str());
-    drawText(" ,Max Temp: ");
-    drawText(String(temp_max).c_str());
-    drawText("\r\n  Wind Speed: ");
-    drawText(String(speed).c_str());
-    drawText("\r\n  Wind Direction: ");
-    drawText(String(direction).c_str());
-    showDisplay();
-    
-  }
-  else {
-    Serial.println("jsonBuffer.parseObject failed");
-  }
-}
-
-void requestWeatherForecastInfo() {
-  HTTPClient httpClient;
-  httpClient.setTimeout(2000);
-
-  /* Connect & Request */
-  String url = String("/data/2.5/forecast?q=") + String(REGION) + String(",") + String(COUNTRY) + String("&cnt=8&units=metric&appid=") + String(APPID);
-  if (!httpClient.begin("api.openweathermap.org", 80, url.c_str())) {
-    Serial.println("ERROR: HTTPClient.begin");
-    return;
-  }
-  Serial.println("OK: HTTPClient.begin");
-  int httpCode = httpClient.GET();
-
-  /* Check response */
-  if (httpCode > 0) {
-    Serial.printf("[HTTP] request from the client was handled: %d\n", httpCode);
-    String payload = httpClient.getString();
-    parseWeatherForecastJson(payload);
-  }
-  else {
-    Serial.printf("[HTTP] connection failed: %s\n", httpClient.errorToString(httpCode).c_str());
-  }
-  httpClient.end();
-}
-
-void parseWeatherForecastJson(String buffer) {
-  int JsonStartIndex = buffer.indexOf('{');
-  int JsonLastIndex = buffer.lastIndexOf('}');
-
-  JsonStr = buffer.substring(JsonStartIndex, JsonLastIndex + 1);
-  Serial.println("PARSE JSON FORECAST INFORMATION: " + JsonStr);
-
-  jsonBuffer.clear();
-  JsonObject& root = jsonBuffer.parseObject(JsonStr);
-
-  if (root.success()) {
-    JsonArray& list = root["list"];
-
-    for (auto& item : list) {
-      const char* time = item["dt_txt"];
-      double temp = item["main"]["temp"];
-      int humidity = item["main"]["humidity"];
-      int conditionId = item["weather"][0]["id"];
-      const char* weather = parseWeatherCondition(conditionId);
-
-      Serial.printf("Time: %s\r\n", time);
-      Serial.printf("Temp: %3.1f C\r\n", temp);
-      Serial.printf("Humidity: %d %%\r\n", humidity);
-      Serial.printf("Condition: %d\r\n", conditionId);
-      Serial.printf("Weather: %s\r\n", weather);
-    }
-  }
-  else {
-    Serial.println("jsonBuffer.parseObject failed");
-  }
-}
-
-const char* parseWeatherCondition(int conditionId) {
-  /* Return string for conditionId */
-  if (conditionId >= 200 && conditionId < 300) return "Thunderstorm";
-  else if (conditionId >= 300 && conditionId < 400) return "Drizzle";
-  else if (conditionId >= 500 && conditionId < 600) return "Rain";
-  else if (conditionId >= 600 && conditionId < 700) return "Snow";
-  else if (conditionId >= 700 && conditionId < 800) return "Fog";
-  else if (conditionId == 800) return "Clear";
-  else if (conditionId > 800 && conditionId < 900) return "Clouds";
-  else return "Unknown condition";
-}
-
-void drawBackgroundImage() {
-  /* Clear screen */
-  display.fillScreen(GxEPD_WHITE);
-  /* Draw bitmap */
-  display.drawBitmap(FRAME, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK, GxEPD::bm_normal);
-}
-
-
-void drawWeatherIcon(int conditionId) {
-  /* Draw bitmap image for conditionId */
-  const uint8_t* bitmap;
-  if (conditionId >= 200 && conditionId < 300) {
-    bitmap = STORM;
-  }
-  else if (conditionId >= 300 && conditionId < 400) {
-    bitmap = RAIN;
-  }
-  else if (conditionId >= 500 && conditionId < 600) {
-    bitmap = RAIN;
-  }
-  else if (conditionId >= 600 && conditionId < 700) {
-    bitmap = SNOW;
-  }
-  else if (conditionId >= 700 && conditionId < 800) {
-    bitmap = FOG;
-  }
-  else if (conditionId == 800) {
-    bitmap = SUNNY;
-  }
-  else if (conditionId > 800 && conditionId < 900) {
-    bitmap = SUNNY_CLOUDY;
-  }
-  else {
-    bitmap = SUNNY;
-  }
-  display.drawBitmap(bitmap, 14, 14, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_normal);
-}
-
-void drawText(int x, int y, const char* text, const GFXfont* font) {
-  /* set text color */
-  display.setTextColor(GxEPD_BLACK);
-  /* set font */
-  display.setFont(font);
-  /* set position */
-  display.setCursor(x, y);
-  /* print text */
-  display.print(text);
-}
-
-void drawText(const char* text) {
-  /* print text */
-  display.print(text);
-}
-
-void showDisplay() {
-  /* show frame buffer */
-  display.update();
 }
