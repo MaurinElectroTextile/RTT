@@ -8,6 +8,10 @@
 extern String JsonStr;
 extern DynamicJsonBuffer jsonBuffer;
 
+#define WEATHER_API_CERT_HOST  "api.openweathermap.org"
+#define WEATHER_API_CERT_PORT  443
+#define WEATHER_API_CERT_FP    "6C 9D 1E 27 F1 13 7B C7 B6 15 90 13 F2 D0 29 97 A4 5B 3F 7E"
+
 #define REGION        "paris"
 #define COUNTRY       "fr"
 #define APPID         "2754590248e99a371c9a0f245a6d9d50"

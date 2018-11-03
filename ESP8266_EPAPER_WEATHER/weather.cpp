@@ -14,7 +14,7 @@ boolean requestWeatherDaily() {
 
   /* Connect & Request */ 
   String url = String("/data/2.5/weather?q=") + String(REGION) + String(",") + String(COUNTRY) + String("&units=metric&appid=") + String(APPID);
-  if (!httpClient.begin("api.openweathermap.org", 80, url.c_str())) {
+  if (!httpClient.begin(WEATHER_API_CERT_HOST, WEATHER_API_CERT_PORT, url.c_str(), WEATHER_API_CERT_FP)) {
     Serial.println("ERROR: HTTPClient.begin");
     return false;
   }
@@ -86,7 +86,7 @@ boolean requestWeatherForecast() {
 
   /* Connect & Request */
   String url = String("/data/2.5/forecast?q=") + String(REGION) + String(",") + String(COUNTRY) + String("&cnt=8&units=metric&appid=") + String(APPID);
-  if (!httpClient.begin("api.openweathermap.org", 80, url.c_str())) {
+  if (!httpClient.begin(WEATHER_API_CERT_HOST, WEATHER_API_CERT_PORT, url.c_str(), WEATHER_API_CERT_FP)) {
     Serial.println("ERROR: HTTPClient.begin");
     return false;
   }
