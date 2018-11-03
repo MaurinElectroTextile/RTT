@@ -6,11 +6,13 @@ String JsonStr;
 weather_t weatherInfos;
 
 /////////////////////////////////// RequestWeatherInfo
-boolean requestWeatherInfo() {
+boolean requestWeatherDaily() {
   HTTPClient httpClient;
   httpClient.setTimeout(2000);
 
-  /* Connect & Request */
+  // http://api.openweathermap.org/data/3.0/measurements?station_id=...&type=...&limit=...
+
+  /* Connect & Request */ 
   String url = String("/data/2.5/weather?q=") + String(REGION) + String(",") + String(COUNTRY) + String("&units=metric&appid=") + String(APPID);
   if (!httpClient.begin("api.openweathermap.org", 80, url.c_str())) {
     Serial.println("ERROR: HTTPClient.begin");
@@ -50,17 +52,6 @@ void parseWeatherJson(String buffer) {
 
   if (root.success()) {
     /* Get information */
-    /*
-      double temp = root["main"]["temp"];
-      int humidity = root["main"]["humidity"];
-      int temp_min = root["main"]["temp_min"];
-      int temp_max = root["main"]["temp_max"];
-      int speed = root["wind"]["speed"];
-      int direction = root["wind"]["direction"];
-      int conditionId = root["weather"][0]["id"];
-      const char* name = root["name"];
-      const char* weather = parseWeatherCondition(conditionId);
-    */
 
     weatherInfos.temp = root["main"]["temp"];
     weatherInfos.humidity = root["main"]["humidity"];
@@ -83,31 +74,13 @@ void parseWeatherJson(String buffer) {
     Serial.printf("ConditionId: %d\r\n", weatherInfos.conditionId);
     Serial.printf("Name: %s\r\n", weatherInfos.weatherName.c_str());
     Serial.printf("Weather: %s\r\n", weatherInfos.weatherType.c_str());
-    /*
-        drawBackgroundImage();
-        drawWeatherIcon(conditionId);
-        drawText(110, 80, String(temp, 1).c_str(), &DSDIGIT30pt7b);
-        drawText(5, 115, String(watherName).c_str(), &DSDIGIT9pt7b);
-        drawText("\r\n  Humidity: ");
-        drawText(String(humidity).c_str());
-        drawText("%");
-        drawText("\r\n  Min Temp: ");
-        drawText(String(temp_min).c_str());
-        drawText(" ,Max Temp: ");
-        drawText(String(temp_max).c_str());
-        drawText("\r\n  Wind Speed: ");
-        drawText(String(windSpeed).c_str());
-        drawText("\r\n  Wind Direction: ");
-        drawText(String(windDirection).c_str());
-        showDisplay();
-    */
   }
   else {
     Serial.println("jsonBuffer.parseObject failed");
   }
 }
 
-boolean requestWeatherForecastInfo() {
+boolean requestWeatherForecast() {
   HTTPClient httpClient;
   httpClient.setTimeout(2000);
 
@@ -124,7 +97,7 @@ boolean requestWeatherForecastInfo() {
   if (httpCode > 0) {
     Serial.printf("[HTTP] request from the client was handled: %d\n", httpCode);
     String payload = httpClient.getString();
-    parseWeatherForecastJson(payload, &weatherInfos);
+    parseWeatherForecastJson(payload);
   }
   else {
     Serial.printf("[HTTP] connection failed: %s\n", httpClient.errorToString(httpCode).c_str());
@@ -133,7 +106,11 @@ boolean requestWeatherForecastInfo() {
   return true;
 }
 
-void parseWeatherForecastJson(String buffer, weather_t* weatherInfos) {
+//////////////////////////////////// The day befor - Do we do it with the API?
+boolean requestWeatherPrevious() {
+}
+
+void parseWeatherForecastJson(String buffer) {
   int JsonStartIndex = buffer.indexOf('{');
   int JsonLastIndex = buffer.lastIndexOf('}');
 
@@ -147,13 +124,6 @@ void parseWeatherForecastJson(String buffer, weather_t* weatherInfos) {
     JsonArray& list = root["list"];
 
     for (auto& item : list) {
-      /*
-        const char* _time = item["dt_txt"];
-        double temp = item["main"]["temp"];
-        int humidity = item["main"]["humidity"];
-        int conditionId = item["weather"][0]["id"];
-        const char* weatherType = parseWeatherCondition(conditionId);
-      */
       const char* _time = item["dt_txt"];
       weatherInfos->_time = _time;
       weatherInfos->temp = item["main"]["temp"];

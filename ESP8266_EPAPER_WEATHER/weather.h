@@ -27,10 +27,11 @@ typedef struct weather {
 
 extern weather_t weatherInfos;
 
-boolean requestWeatherInfo();
+boolean requestWeatherDaily();
 void parseWeatherJson(String buffer);
-boolean requestWeatherForecastInfo();
-void parseWeatherForecastJson(String buffer, weather_t* weatherPtr);
+boolean requestWeatherForecast();
+void parseWeatherForecastJson(String buffer);
+boolean requestWeatherPrevious(); // TODO
 
 const char* parseWeatherCondition(int conditionId);
 void drawWeatherIcon(int conditionId);

@@ -57,7 +57,7 @@ void drawWeatherIcon(int conditionId) {
   else {
     bitmap = SUNNY;
   }
-  display.drawBitmap(bitmap, 14, 14, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, GxEPD_WIGHT, GxEPD::bm_normal);
+  display.drawBitmap(bitmap, 14, 14, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_normal);
 }
 
 void drawBackgroundImage() {
