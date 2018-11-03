@@ -50,6 +50,9 @@ void setup() {
   // requestWeatherInfo();
   // delay(3000);
   // requestWeatherForecastInfo();
+
+  /* Get energy information */
+  // energyUpdate();
 }
 
 void loop() {
@@ -62,6 +65,9 @@ void loop() {
     if ( requestWeatherForecast() ) { // Get forecast weather information
       Draw_EPD();
     }
+
+    energyUpdate();
+
     requestFlag = false;
   }
 }
