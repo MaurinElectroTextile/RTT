@@ -55,11 +55,11 @@ void setup() {
 void loop() {
   /* Every 10 minutes */
   if (requestFlag) {
-    if ( requestWeatherInfo() ) {   // Get weather information
+    if ( requestWeatherDaily() ) {   // Get weather information
       Draw_EPD();
     }
     delay(3000);
-    if ( requestWeatherForecastInfo() ) { // Get forecast weather information
+    if ( requestWeatherForecast() ) { // Get forecast weather information
       Draw_EPD();
     }
     requestFlag = false;

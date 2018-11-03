@@ -125,17 +125,17 @@ void parseWeatherForecastJson(String buffer) {
 
     for (auto& item : list) {
       const char* _time = item["dt_txt"];
-      weatherInfos->_time = _time;
-      weatherInfos->temp = item["main"]["temp"];
-      weatherInfos->humidity = item["main"]["humidity"];
-      weatherInfos->conditionId = item["weather"][0]["id"];
-      weatherInfos->weatherType = parseWeatherCondition(weatherInfos->conditionId);
+      weatherInfos._time = _time;
+      weatherInfos.temp = item["main"]["temp"];
+      weatherInfos.humidity = item["main"]["humidity"];
+      weatherInfos.conditionId = item["weather"][0]["id"];
+      weatherInfos.weatherType = parseWeatherCondition(weatherInfos.conditionId);
 
-      Serial.printf("Time: %s\r\n", weatherInfos->_time.c_str());
-      Serial.printf("Temp: %3.1f C\r\n", weatherInfos->temp);
-      Serial.printf("Humidity: %d %%\r\n", weatherInfos->humidity);
-      Serial.printf("Condition: %d\r\n", weatherInfos->conditionId);
-      Serial.printf("Weather: %s\r\n", weatherInfos->weatherType.c_str());
+      Serial.printf("Time: %s\r\n", weatherInfos._time.c_str());
+      Serial.printf("Temp: %3.1f C\r\n", weatherInfos.temp);
+      Serial.printf("Humidity: %d %%\r\n", weatherInfos.humidity);
+      Serial.printf("Condition: %d\r\n", weatherInfos.conditionId);
+      Serial.printf("Weather: %s\r\n", weatherInfos.weatherType.c_str());
     }
   }
   else {
