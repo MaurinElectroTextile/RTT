@@ -1,5 +1,7 @@
 #include "display.h"
 
+// Maximum width and height: 128 and 296
+
 GxIO_Class io(SPI, CS_PIN, DC_PIN, RST_PIN);
 GxEPD_Class display(io);
 
