@@ -12,7 +12,7 @@ boolean requestWeatherDaily() {
 
   // http://api.openweathermap.org/data/3.0/measurements?station_id=...&type=...&limit=...
 
-  /* Connect & Request */ 
+  /* Connect & Request */
   String url = String("/data/2.5/weather?q=") + String(REGION) + String(",") + String(COUNTRY) + String("&units=metric&appid=") + String(APPID);
   if (!httpClient.begin(WEATHER_API_CERT_HOST, WEATHER_API_CERT_PORT, url.c_str(), WEATHER_API_CERT_FP)) {
     Serial.println("ERROR: HTTPClient.begin");
@@ -142,7 +142,6 @@ void parseWeatherForecastJson(String buffer) {
     Serial.println("jsonBuffer.parseObject failed");
   }
 }
-
 
 const char* parseWeatherCondition(int conditionId) {
   /* Return string for conditionId */

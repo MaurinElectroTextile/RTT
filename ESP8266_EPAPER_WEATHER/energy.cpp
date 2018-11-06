@@ -10,35 +10,18 @@ String energyClientSecret64 = "YTBjYzMyODQtYzE5Yi00YzZjLTk1YTMtNGFmYmUxY2ViZjlhO
 
 DynamicJsonBuffer energyJsonBuffer;
 
-bool energyFetchAuthToken(HTTPClient *httpClient) {
-  bool status = false;
 
-  if (!httpClient->begin(ENERGY_OAUTH_HOST, ENERGY_OAUTH_PORT, ENERGY_OAUTH_URL, ENERGY_OAUTH_CERT_FP)) {
-    Serial.println("energyGetAuthToken/INIT");
-    return false;
+bool energyUpdate() {
+  HTTPClient httpClient;
+
+  httpClient.setReuse(true);
+  httpClient.setTimeout(2000);
+
+  if (energyAuthTokenExpired) {
+    energyFetchAuthToken(&httpClient);
   }
 
-  httpClient->addHeader("Authorization", "Basic " + energyClientSecret64);
-
-  int httpCode = httpClient->POST(NULL, 0);
-
-  if (httpCode > 0) {
-    status = energyParseAuthToken(httpClient->getString());
-  } else {
-    Serial.printf("energyGetAuthToken/POST: %s", httpClient->errorToString(httpCode).c_str());
-  }
-  httpClient->end();
-
-  return status;
-}
-
-bool energyParseAuthToken(String payload) {
-  Serial.println("energyParseAuthToken:");
-  Serial.println(payload);
-
-  energyJsonBuffer.clear();
-  JsonObject& root = energyJsonBuffer.parseObject(payload);
-  energyAuthToken = String((const char *)root["access_token"]);
+  energyFetchActualGen(&httpClient);
 
   return true;
 }
@@ -72,17 +55,35 @@ bool energyParseActualGen(String payload) {
   return true;
 }
 
-bool energyUpdate() {
-  HTTPClient httpClient;
+bool energyParseAuthToken(String payload) {
+  Serial.println("energyParseAuthToken:");
+  Serial.println(payload);
 
-  httpClient.setReuse(true);
-  httpClient.setTimeout(2000);
-
-  if (energyAuthTokenExpired) {
-    energyFetchAuthToken(&httpClient);
-  }
-
-  energyFetchActualGen(&httpClient);
+  energyJsonBuffer.clear();
+  JsonObject& root = energyJsonBuffer.parseObject(payload);
+  energyAuthToken = String((const char *)root["access_token"]);
 
   return true;
+}
+
+bool energyFetchAuthToken(HTTPClient *httpClient) {
+  bool status = false;
+
+  if (!httpClient->begin(ENERGY_OAUTH_HOST, ENERGY_OAUTH_PORT, ENERGY_OAUTH_URL, ENERGY_OAUTH_CERT_FP)) {
+    Serial.println("energyGetAuthToken/INIT");
+    return false;
+  }
+
+  httpClient->addHeader("Authorization", "Basic " + energyClientSecret64);
+
+  int httpCode = httpClient->POST(NULL, 0);
+
+  if (httpCode > 0) {
+    status = energyParseAuthToken(httpClient->getString());
+  } else {
+    Serial.printf("energyGetAuthToken/POST: %s", httpClient->errorToString(httpCode).c_str());
+  }
+  httpClient->end();
+
+  return status;
 }

@@ -31,6 +31,7 @@ Ticker ticker;
 void tickerHandler();
 bool configWiFi();
 
+/////////////////////////// SETUP
 void setup() {
   Serial.begin(115200);
   //Serial.setDebugOutput(true);
@@ -52,7 +53,7 @@ void setup() {
 void loop() {
 
   if (requestFlag) {
-    if ( requestWeatherDaily() && requestWeatherForecast() && energyUpdate()) {   // Get weather information
+    if ( requestWeatherDaily() && requestWeatherForecast() && energyUpdate() ) {   // Get informations
       Draw_EPD();
     }
     // delay(3000);

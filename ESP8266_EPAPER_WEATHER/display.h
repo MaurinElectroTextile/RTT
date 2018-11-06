@@ -17,7 +17,6 @@
 #define WEATHER_ICON_HEIGHT 72
 
 void initDisplay();
-// void Draw_EPD(weather_t* weatherInfos);
 void Draw_EPD();
 void drawWeatherIcon(int conditionId);
 void drawBackgroundImage();
