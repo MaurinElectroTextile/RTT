@@ -1,8 +1,5 @@
 #include "weather.h"
 
-DynamicJsonBuffer jsonBuffer;
-String JsonStr;
-
 weather_t weatherInfos;
 
 /////////////////////////////////// RequestWeatherInfo
@@ -41,11 +38,10 @@ void parseWeatherJson(String buffer) {
   int JsonLastIndex = buffer.lastIndexOf('}');
 
   /* Substring JSON string */
-  JsonStr = buffer.substring(JsonStartIndex, JsonLastIndex + 1);
+  String JsonStr = buffer.substring(JsonStartIndex, JsonLastIndex + 1);
   Serial.println("PARSE JSON WEATHER INFORMATION: " + JsonStr);
 
-  /* Clear buffer */
-  jsonBuffer.clear();
+  DynamicJsonBuffer jsonBuffer;
 
   /* Parse JSON string */
   JsonObject& root = jsonBuffer.parseObject(JsonStr);
@@ -114,10 +110,11 @@ void parseWeatherForecastJson(String buffer) {
   int JsonStartIndex = buffer.indexOf('{');
   int JsonLastIndex = buffer.lastIndexOf('}');
 
-  JsonStr = buffer.substring(JsonStartIndex, JsonLastIndex + 1);
+  String JsonStr = buffer.substring(JsonStartIndex, JsonLastIndex + 1);
   Serial.println("PARSE JSON FORECAST INFORMATION: " + JsonStr);
 
-  jsonBuffer.clear();
+  DynamicJsonBuffer jsonBuffer;
+
   JsonObject& root = jsonBuffer.parseObject(JsonStr);
 
   if (root.success()) {

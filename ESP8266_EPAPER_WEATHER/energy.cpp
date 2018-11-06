@@ -8,9 +8,6 @@ bool energyAuthTokenExpired = true;
 
 String energyClientSecret64 = "YTBjYzMyODQtYzE5Yi00YzZjLTk1YTMtNGFmYmUxY2ViZjlhOmJhNzViYzFkLWI4NWEtNDUwMS05ZjVmLTZjYzdjNGE0YTlmMg==";
 
-DynamicJsonBuffer energyJsonBuffer;
-
-
 bool energyUpdate() {
   HTTPClient httpClient;
 
@@ -52,6 +49,9 @@ bool energyParseActualGen(String payload) {
   Serial.println("energyParseActualGen:");
   Serial.println(payload);
 
+  DynamicJsonBuffer buffer;
+  JsonObject& root = buffer.parseObject(payload);
+
   return true;
 }
 
@@ -59,8 +59,9 @@ bool energyParseAuthToken(String payload) {
   Serial.println("energyParseAuthToken:");
   Serial.println(payload);
 
-  energyJsonBuffer.clear();
-  JsonObject& root = energyJsonBuffer.parseObject(payload);
+  DynamicJsonBuffer buffer;
+  JsonObject& root = buffer.parseObject(payload);
+
   energyAuthToken = String((const char *)root["access_token"]);
 
   return true;
