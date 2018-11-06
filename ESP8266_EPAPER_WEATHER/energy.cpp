@@ -51,7 +51,7 @@ bool energyParseActualGen(String& payload) {
   Serial.println(payload);
 
   DynamicJsonBuffer buffer;
-  JsonObject& root = buffer.parseObject(payload);
+  JsonObject& root = buffer.parseObject(payload.c_str());
 
   return true;
 }
@@ -61,7 +61,7 @@ bool energyParseAuthToken(String& payload) {
   Serial.println(payload);
 
   DynamicJsonBuffer buffer;
-  JsonObject& root = buffer.parseObject(payload);
+  JsonObject& root = buffer.parseObject(payload.c_str());
 
   energyAuthToken = String((const char *)root["access_token"]);
 

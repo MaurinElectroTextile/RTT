@@ -44,7 +44,7 @@ void parseWeatherJson(String& buffer) {
   DynamicJsonBuffer jsonBuffer;
 
   /* Parse JSON string */
-  JsonObject& root = jsonBuffer.parseObject(JsonStr);
+  JsonObject& root = jsonBuffer.parseObject(JsonStr.c_str());
 
   if (root.success()) {
     /* Get information */
@@ -115,7 +115,7 @@ void parseWeatherForecastJson(String& buffer) {
 
   DynamicJsonBuffer jsonBuffer;
 
-  JsonObject& root = jsonBuffer.parseObject(JsonStr);
+  JsonObject& root = jsonBuffer.parseObject(JsonStr.c_str());
 
   if (root.success()) {
     JsonArray& list = root["list"];
