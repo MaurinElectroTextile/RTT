@@ -1,11 +1,12 @@
 #include <Ticker.h>
 #include <ESP8266WiFi.h>
 
+#include "NTPclient.h"
 #include "weather.h"
 #include "energy.h"
 #include "imagedata.h"
 #include "display.h"
-  
+
 #define WIFI_SSID     "Chevrette"
 #define WIFI_PWD      "ch0c0latchienjaune"
 
@@ -32,6 +33,9 @@ void setup() {
 
   /* Initialize GxEPD library */
   initDisplay();
+
+  /* Initialize NTPClient library */
+  timeClientBegin();
 
   /* Set ticker as 1 minutes */
   ticker.attach(REQ_INTERVAL_SEC, tickerHandler);
