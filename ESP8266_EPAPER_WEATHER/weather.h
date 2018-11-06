@@ -29,9 +29,9 @@ typedef struct weather {
 extern weather_t weatherInfos;
 
 boolean requestWeatherDaily();
-void parseWeatherJson(String buffer);
+void parseWeatherJson(String& buffer);
 boolean requestWeatherForecast();
-void parseWeatherForecastJson(String buffer);
+void parseWeatherForecastJson(String& buffer);
 boolean requestWeatherPrevious(); // TODO
 
 const char* parseWeatherCondition(int conditionId);

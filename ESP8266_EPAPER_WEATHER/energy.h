@@ -14,9 +14,9 @@
 #define ENERGY_API_CERT_FP    "7A 06 5A FF 89 4D 90 DF DC 15 C1 44 F7 B3 CC B4 ED A7 98 76"
 
 bool energyUpdate();
-bool energyParseActualGen(String payload);
+bool energyParseActualGen(String& payload);
 bool energyFetchActualGen(HTTPClient* httpClient);
-bool energyParseAuthToken(String payload);
+bool energyParseAuthToken(String& payload);
 bool energyFetchAuthToken(HTTPClient* httpClient);
 
 #endif /*__ENERGY_H__*/

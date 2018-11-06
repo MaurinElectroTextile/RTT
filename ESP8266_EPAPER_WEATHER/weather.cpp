@@ -33,7 +33,7 @@ boolean requestWeatherDaily() {
 }
 
 /////////////////////////////////// ParseWeatherJson
-void parseWeatherJson(String buffer) {
+void parseWeatherJson(String& buffer) {
   int JsonStartIndex = buffer.indexOf('{');
   int JsonLastIndex = buffer.lastIndexOf('}');
 
@@ -106,7 +106,7 @@ boolean requestWeatherForecast() {
 boolean requestWeatherPrevious() {
 }
 
-void parseWeatherForecastJson(String buffer) {
+void parseWeatherForecastJson(String& buffer) {
   int JsonStartIndex = buffer.indexOf('{');
   int JsonLastIndex = buffer.lastIndexOf('}');
 

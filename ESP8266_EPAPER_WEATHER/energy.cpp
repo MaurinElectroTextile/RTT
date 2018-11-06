@@ -36,7 +36,8 @@ bool energyFetchActualGen(HTTPClient *httpClient) {
   int httpCode = httpClient->GET();
 
   if (httpCode > 0) {
-    status = energyParseActualGen(httpClient->getString());
+    String payload = httpClient->getString();
+    status = energyParseActualGen(payload);
   } else {
     Serial.printf("energyFetchActualGen/GET: %s", httpClient->errorToString(httpCode).c_str());
   }
@@ -45,7 +46,7 @@ bool energyFetchActualGen(HTTPClient *httpClient) {
   return status;
 }
 
-bool energyParseActualGen(String payload) {
+bool energyParseActualGen(String& payload) {
   Serial.println("energyParseActualGen:");
   Serial.println(payload);
 
@@ -55,7 +56,7 @@ bool energyParseActualGen(String payload) {
   return true;
 }
 
-bool energyParseAuthToken(String payload) {
+bool energyParseAuthToken(String& payload) {
   Serial.println("energyParseAuthToken:");
   Serial.println(payload);
 
@@ -80,7 +81,8 @@ bool energyFetchAuthToken(HTTPClient *httpClient) {
   int httpCode = httpClient->POST(NULL, 0);
 
   if (httpCode > 0) {
-    status = energyParseAuthToken(httpClient->getString());
+    String payload = httpClient->getString();
+    status = energyParseAuthToken(payload);
   } else {
     Serial.printf("energyGetAuthToken/POST: %s", httpClient->errorToString(httpCode).c_str());
   }
