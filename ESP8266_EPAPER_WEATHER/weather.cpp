@@ -53,8 +53,8 @@ void parseWeatherJson(String& buffer) {
     weatherInfos.humidity = root["main"]["humidity"];
     weatherInfos.temp_min = root["main"]["temp_min"];
     weatherInfos.temp_max = root["main"]["temp_max"];
-    weatherInfos.windSpeed = root["wind"]["speed"];
-    weatherInfos.windDirection = root["wind"]["direction"];
+    // weatherInfos.windSpeed = root["wind"]["speed"];
+    // weatherInfos.windDirection = root["wind"]["direction"];
     weatherInfos.conditionId = root["weather"][0]["id"];
     const char* weatherName = root["name"];
     weatherInfos.weatherName = weatherName;

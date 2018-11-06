@@ -5,28 +5,17 @@
 #include "energy.h"
 #include "imagedata.h"
 #include "display.h"
+  
+#define WIFI_SSID     "Chevrette"
+#define WIFI_PWD      "ch0c0latchienjaune"
 
-// #define WIFI_SSID     "Chevrette"
+// #define WIFI_SSID     "Flying-Phone-N"
 // #define WIFI_PWD      "PASS"
-
-#define WIFI_SSID     "Flying-Phone-N"
-#define WIFI_PWD      "PASS"
 
 #define REQ_INTERVAL_SEC  20
 
 bool requestFlag = false;
 Ticker ticker;
-
-/*
-  BUSY    D2-GPIO4
-  RST     D4-GPIO2
-  DC      D3-GPIO0
-  CS      D1-GPIO5 (I've changed CS pin from GPIO15 to GPIO5 as Waveshare EPD makes GPIO15 high when NodeMCU restarts).
-  CLK     D5-GPIO14
-  DIN     D7-GPIO13
-  GND     GND
-  3.3V    3.3V
-*/
 
 void tickerHandler();
 bool configWiFi();
