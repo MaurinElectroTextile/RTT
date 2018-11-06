@@ -65,8 +65,8 @@ void parseWeatherJson(String& buffer) {
     Serial.printf("Humidity: %d\r\n", weatherInfos.humidity);
     Serial.printf("Min. Temp: %d\r\n", weatherInfos.temp_min);
     Serial.printf("Max. Temp: %d\r\n", weatherInfos.temp_max);
-    Serial.printf("Wind Speed: %d\r\n", weatherInfos.windSpeed);
-    Serial.printf("Wind Direction: %d\r\n", weatherInfos.windDirection);
+    // Serial.printf("Wind Speed: %d\r\n", weatherInfos.windSpeed);
+    // Serial.printf("Wind Direction: %d\r\n", weatherInfos.windDirection);
     Serial.printf("ConditionId: %d\r\n", weatherInfos.conditionId);
     Serial.printf("Name: %s\r\n", weatherInfos.weatherName.c_str());
     Serial.printf("Weather: %s\r\n", weatherInfos.weatherType.c_str());
