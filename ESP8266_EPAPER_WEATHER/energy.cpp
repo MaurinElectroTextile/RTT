@@ -26,7 +26,7 @@ bool energyUpdate() {
 bool energyFetchActualGen(HTTPClient *httpClient) {
   bool status = false;
 
-  if (!httpClient->begin(ENERGY_API_HOST, ENERGY_API_PORT, ENERGY_API_URL, ENERGY_API_CERT_FP)) {
+  if (!httpClient->begin(ENERGY_API_HOST, ENERGY_API_PORT, ENERGY_API_URL_ACTUAL, ENERGY_API_CERT_FP)) {
     Serial.println("energyFetchActualGen/INIT");
     return false;
   }
