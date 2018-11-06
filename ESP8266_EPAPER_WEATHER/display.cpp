@@ -1,6 +1,6 @@
 #include "display.h"
 
-GxIO_Class io(SPI, SS, 0, 2);
+GxIO_Class io(SPI, CS_PIN, DC_PIN, RST_PIN);
 GxEPD_Class display(io);
 
 /* Initialize GxEPD library */
