@@ -10,7 +10,7 @@
 // #define WIFI_PWD      "PASS"
 
 #define WIFI_SSID     "Flying-Phone-N"
-#define WIFI_PWD      "salami42"
+#define WIFI_PWD      "PASS"
 
 #define REQ_INTERVAL_SEC  20
 
@@ -45,6 +45,7 @@ void setup() {
 
   /* Set ticker as 1 minutes */
   ticker.attach(REQ_INTERVAL_SEC, tickerHandler);
+<<<<<<< HEAD
 
   /* Get weather information */
   // requestWeatherInfo();
@@ -53,6 +54,8 @@ void setup() {
 
   /* Get energy information */
   // energyUpdate();
+=======
+>>>>>>> 80f978e... Minor changes
 }
 
 void loop() {
