@@ -45,32 +45,17 @@ void setup() {
 
   /* Set ticker as 1 minutes */
   ticker.attach(REQ_INTERVAL_SEC, tickerHandler);
-<<<<<<< HEAD
 
-  /* Get weather information */
-  // requestWeatherInfo();
-  // delay(3000);
-  // requestWeatherForecastInfo();
-
-  /* Get energy information */
-  // energyUpdate();
-=======
->>>>>>> 80f978e... Minor changes
 }
 
+/////////////////////////// LOOP
 void loop() {
-  /* Every 10 minutes */
+
   if (requestFlag) {
-    if ( requestWeatherDaily() ) {   // Get weather information
+    if ( requestWeatherDaily() && requestWeatherForecast() && energyUpdate()) {   // Get weather information
       Draw_EPD();
     }
-    delay(3000);
-    if ( requestWeatherForecast() ) { // Get forecast weather information
-      Draw_EPD();
-    }
-
-    energyUpdate();
-
+    // delay(3000);
     requestFlag = false;
   }
 }
