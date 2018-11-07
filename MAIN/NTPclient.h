@@ -9,7 +9,7 @@
 
 extern const char* days[];
 
-char getDayNow(const char* daysPtr);
+char getDayNow(const char* daysPtr[]);
 void getTimeNow();
 
 void timeClientUpdate();

@@ -8,8 +8,8 @@ NTPClient timeClient(ntpUDP, NTP_ADDRESS, NTP_OFFSET);
 
 const char* days[] = {"Lun.", "Mar.", "Mer.", "Jeu.", "Ven.", "Sam.", "Dim."}; // PROGMEM?
 
-char getDayNow(const char* daysPtr) {
-  return daysPtr[timeClient.getDay()];
+char getDayNow(const char* daysPtr[]) {
+  return* daysPtr[timeClient.getDay()-1];
 }
 
 void getTimeNow() {
