@@ -1,1 +1,0 @@
-Copy files to the "fonts" folder of Adafruit GFX library.
