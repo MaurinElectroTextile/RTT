@@ -10,27 +10,17 @@ void initDisplay() {
   display.init();
 }
 
-//void Draw_EPD(weather_t* weatherInfos) {
 void Draw_EPD() {
-
   drawBackgroundImage();
   drawWeatherIcon(weatherInfos.conditionId);
   drawText(110, 80, String(weatherInfos.temp, 1).c_str(), &DSDIGIT30pt7b);
-  drawText(5, 115, String(weatherInfos.weatherName).c_str(), &DSDIGIT9pt7b);
-  drawText("\r\n  Humidity: ");
-  drawText(String(weatherInfos.humidity).c_str());
-  drawText("%");
-  drawText("\r\n  Min Temp: ");
+  drawText(0, 180, String(weatherInfos.weatherName).c_str(), &DSDIGIT9pt7b);
+  drawText("\r\n  Min: ");
   drawText(String(weatherInfos.temp_min).c_str());
-  drawText(" ,Max Temp: ");
+  drawText("\r\n Max: ");
   drawText(String(weatherInfos.temp_max).c_str());
-  drawText("\r\n  Wind Speed: ");
-  drawText(String(weatherInfos.windSpeed).c_str());
-  drawText("\r\n  Wind Direction: ");
-  drawText(String(weatherInfos.windDirection).c_str());
   showDisplay();
 }
-
 
 void drawWeatherIcon(int conditionId) {
   /* Draw bitmap image for conditionId */
