@@ -7,9 +7,9 @@
 #define NTP_OFFSET    3600                   // In seconds
 #define NTP_ADDRESS   "europe.pool.ntp.org"  // Change this to whatever pool is closest (see ntp.org)
 
-extern char* days[];
+extern const char* days[];
 
-char getDayNow(char* daysPtr);
+char getDayNow(const char* daysPtr);
 void getTimeNow();
 
 void timeClientUpdate();
