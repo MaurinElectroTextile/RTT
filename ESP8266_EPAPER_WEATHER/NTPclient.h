@@ -4,8 +4,7 @@
 // https://github.com/arduino-libraries/NTPClient
 // Define NTP properties
 
-#define NTP_OFFSET    (60 * 60)              // In seconds
-#define NTP_INTERVAL  (60 * 1000)            // In miliseconds
+#define NTP_OFFSET    3600                   // In seconds
 #define NTP_ADDRESS   "europe.pool.ntp.org"  // Change this to whatever pool is closest (see ntp.org)
 
 void timeClientUpdate();
