@@ -36,7 +36,9 @@ void setup() {
 
   /* Initialize NTPClient library */
   timeClientBegin();
-
+  timeClientUpdate();
+  getDayNow(&days[]);
+  
   /* Set ticker as 1 minutes */
   ticker.attach(REQ_INTERVAL_SEC, tickerHandler);
 
