@@ -37,8 +37,6 @@ void setup() {
   /* Initialize NTPClient library */
   timeClientBegin();
   timeClientUpdate();
-  Serial.println(getDayNow(days));
-  delay(2000);
   
   /* Set ticker as 1 minutes */
   ticker.attach(REQ_INTERVAL_SEC, tickerHandler);

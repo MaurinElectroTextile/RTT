@@ -6,14 +6,15 @@
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, NTP_ADDRESS, NTP_OFFSET);
 
-const char* days[] = {"Lun.", "Mar.", "Mer.", "Jeu.", "Ven.", "Sam.", "Dim."}; // PROGMEM?
+char* days[] = {"Lun.", "Mar.", "Mer.", "Jeu.", "Ven.", "Sam.", "Dim."}; // PROGMEM?
 
-char getDayNow(const char* daysPtr[]) {
-  return* daysPtr[timeClient.getDay()-1];
+char* getDayNow() {
+  return days[timeClient.getDay() - 1];
 }
 
 void getTimeNow() {
-  Serial.println(timeClient.getFormattedTime());
+  timeClient.getFormattedTime();
+  // Serial.println(timeClient.getFormattedTime());
 }
 
 void timeClientUpdate() {

@@ -48,25 +48,17 @@ void parseWeatherJson(String& buffer) {
 
   if (root.success()) {
     /* Get information */
-
     weatherInfos.temp = root["main"]["temp"];
-    weatherInfos.humidity = root["main"]["humidity"];
-    weatherInfos.temp_min = root["main"]["temp_min"];
-    weatherInfos.temp_max = root["main"]["temp_max"];
-    // weatherInfos.windSpeed = root["wind"]["speed"];
-    // weatherInfos.windDirection = root["wind"]["direction"];
+    weatherInfos.minTemp = root["main"]["temp_min"];
+    weatherInfos.maxTemp = root["main"]["temp_max"];
     weatherInfos.conditionId = root["weather"][0]["id"];
     const char* weatherName = root["name"];
     weatherInfos.weatherName = weatherName;
     weatherInfos.weatherType = parseWeatherCondition(weatherInfos.conditionId);
 
     /* Serial Output */
-    Serial.printf("Temp: %3.1f\r\n", weatherInfos.temp);
-    Serial.printf("Humidity: %d\r\n", weatherInfos.humidity);
-    Serial.printf("Min. Temp: %d\r\n", weatherInfos.temp_min);
-    Serial.printf("Max. Temp: %d\r\n", weatherInfos.temp_max);
-    // Serial.printf("Wind Speed: %d\r\n", weatherInfos.windSpeed);
-    // Serial.printf("Wind Direction: %d\r\n", weatherInfos.windDirection);
+    Serial.printf("MinTemp: %d\r\n", weatherInfos.minTemp);
+    Serial.printf("MaxTemp: %d\r\n", weatherInfos.maxTemp);
     Serial.printf("ConditionId: %d\r\n", weatherInfos.conditionId);
     Serial.printf("Name: %s\r\n", weatherInfos.weatherName.c_str());
     Serial.printf("Weather: %s\r\n", weatherInfos.weatherType.c_str());
@@ -124,13 +116,11 @@ void parseWeatherForecastJson(String& buffer) {
       const char* _time = item["dt_txt"];
       weatherInfos._time = _time;
       weatherInfos.temp = item["main"]["temp"];
-      weatherInfos.humidity = item["main"]["humidity"];
       weatherInfos.conditionId = item["weather"][0]["id"];
       weatherInfos.weatherType = parseWeatherCondition(weatherInfos.conditionId);
 
       Serial.printf("Time: %s\r\n", weatherInfos._time.c_str());
       Serial.printf("Temp: %3.1f C\r\n", weatherInfos.temp);
-      Serial.printf("Humidity: %d %%\r\n", weatherInfos.humidity);
       Serial.printf("Condition: %d\r\n", weatherInfos.conditionId);
       Serial.printf("Weather: %s\r\n", weatherInfos.weatherType.c_str());
     }

@@ -1,4 +1,5 @@
 #include "display.h"
+#include "NTPclient.h"
 
 // Maximum width and height: 128 and 296
 
@@ -9,21 +10,40 @@ GxEPD_Class display(io);
 void initDisplay() {
   display.init();
 }
-
 void Draw_EPD() {
+
   drawBackgroundImage();
-  drawWeatherIcon(weatherInfos.conditionId);
-  drawText(110, 80, String(weatherInfos.temp, 1).c_str(), &DSDIGIT30pt7b);
-  drawText(0, 180, String(weatherInfos.weatherName).c_str(), &DSDIGIT9pt7b);
-  drawText("\r\n  Min: ");
-  drawText(String(weatherInfos.temp_min).c_str());
-  drawText("\r\n Max: ");
-  drawText(String(weatherInfos.temp_max).c_str());
+
+  drawText(40, 30, getDayNow(), &Lato_Bold14pt7b);
+
+  drawText(22, 70, String(weatherInfos.minTemp).c_str(), &Lato_Bold12pt7b);
+  drawText(80, 70, String(weatherInfos.maxTemp).c_str(), &Lato_Bold12pt7b);
+  // drawText(22, 70, String("10").c_str(), &Lato_Bold12pt7b);
+  // drawText(80, 70, String("18").c_str(), &Lato_Bold12pt7b);
+
+  drawWeatherIcon(20, 80, weatherInfos.conditionId);
+  drawWeatherIcon(75, 80, weatherInfos.conditionId);
+  // drawWeatherIcon(20, 80, 200);
+  // drawWeatherIcon(75, 80, 300);
+
+  drawText(20, 140, "min", &Lato_Bold10pt7b);
+  drawText(70, 140, "max", &Lato_Bold10pt7b);
+
+  drawEnergyIcon(10, 160);
+
   showDisplay();
 }
 
-void drawWeatherIcon(int conditionId) {
-  /* Draw bitmap image for conditionId */
+void drawEnergyIcon(int posX, int posY) {
+  /* Draw energy bitmap images */
+  display.drawBitmap(LOCALE, posX + 0, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_WHITE, GxEPD::bm_normal);
+  display.drawBitmap(RENEWABLE, posX + 28, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_WHITE, GxEPD::bm_normal);
+  display.drawBitmap(CARBON, posX + 56, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_WHITE, GxEPD::bm_normal);
+  display.drawBitmap(NUCLEAR, posX + 82, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_WHITE, GxEPD::bm_normal);
+}
+
+void drawWeatherIcon(int posX, int posY, int conditionId) {
+  /* Draw weather bitmap images */
   const uint8_t* bitmap;
   if (conditionId >= 200 && conditionId < 300) {
     bitmap = STORM;
@@ -49,29 +69,30 @@ void drawWeatherIcon(int conditionId) {
   else {
     bitmap = SUNNY;
   }
-  display.drawBitmap(bitmap, 14, 14, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_normal);
+  display.drawBitmap(bitmap, posX, posY, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, GxEPD_WHITE, GxEPD::bm_normal);
 }
 
 void drawBackgroundImage() {
   /* Clear screen */
-  display.fillScreen(GxEPD_WHITE);
-  /* Draw bitmap */
-  display.drawBitmap(FRAME, 0, 0, GxEPD_HEIGHT, GxEPD_WIDTH, GxEPD_BLACK, GxEPD::bm_normal);
+  display.fillScreen(GxEPD_BLACK);
 }
 
-void drawText(int x, int y, const char* text, const GFXfont * font) {
+void drawText(int posX, int posY, const char* text, const GFXfont * font) {
+  display.setRotation(0);
   /* set text color */
-  display.setTextColor(GxEPD_BLACK);
+  // display.setTextColor(GxEPD_BLACK);
+  display.setTextColor(GxEPD_WHITE);
   /* set font */
   display.setFont(font);
   /* set position */
-  display.setCursor(x, y);
+  display.setCursor(posX, posY);
   /* print text */
   display.print(text);
 }
 
-void drawText(const char* text) {
+void drawText(const char* text, const GFXfont * font) {
   /* print text */
+  display.setFont(font);
   display.print(text);
 }
 

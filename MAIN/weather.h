@@ -15,11 +15,8 @@
 
 typedef struct weather {
   double temp;
-  int humidity;
-  int temp_min;
-  int temp_max;
-  // int windSpeed;
-  // int windDirection;
+  int minTemp;
+  int maxTemp;
   int conditionId;
   String weatherName;
   String weatherType;
