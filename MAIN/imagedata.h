@@ -1,7 +1,7 @@
 #ifndef __IMAGEDATA_H__
 #define __IMAGEDATA_H__
 
-extern const unsigned char FRAME[];
+// PICTOS WEATHER
 extern const unsigned char SUNNY[];
 extern const unsigned char SUNNY_CLOUDY[];
 extern const unsigned char CLOUDY[];
@@ -9,5 +9,11 @@ extern const unsigned char RAIN[];
 extern const unsigned char STORM[];
 extern const unsigned char SNOW[];
 extern const unsigned char FOG[];
+
+// PICTOS ENERGY
+extern const unsigned char CARBON[];
+extern const unsigned char NUCLEAR[];
+extern const unsigned char RENEWABLE[];
+extern const unsigned char LOCALE[];
 
 #endif /*__IMAGEDATA_H__*/
