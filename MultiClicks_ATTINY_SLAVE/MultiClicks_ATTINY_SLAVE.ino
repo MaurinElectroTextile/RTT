@@ -1,6 +1,7 @@
 /* PiezoHits & ATTiny-DIGISPARK
 
-  DIGISPARK slave, sample a pezo sensor and send char to Arduino NodeMCU master.
+  DIGISPARK slave
+  Sample a pezo sensor and send char to Arduino NodeMCU master.
 
  ** UNDER MACKINTOSH YOU WILL NEED A USB HUB TO PROGRAM THE DIGISPARK BOARD! **
   Instaling Digispark support for Arduino
@@ -14,7 +15,10 @@
     Pin 3 → Analog In (also used for USB+ when USB is in use)
     Pin 4 → PWM, Analog (also used for USB- when USB is in use)
     Pin 5 → Analog In
+
   Hardware Digispark Arduino
+
+
 
   Single click -> send char 'A'
   Double click -> send char 'B'
@@ -27,15 +31,15 @@
 elapsedMillis timer;
 elapsedMillis timerLed;
 
-//#define I2C_BUS_PIN       2     // Bus PIN
+#define I2C_BUS_PIN         0     // Bus PIN
 #define I2C_SLAVE_ADDR      0x27  // I2C slave address
 #define LED_PIN             1     // Bus PIN
 
 #define PIEZO_PIN_INPUT     5     // Piezo input PIN
-#define THRESHOLD           10    // Threshold for the piezo analog readings
+#define THRESHOLD           100   // Threshold for the piezo analog readings
 #define DEBOUNCE_TIME       20    // Debounce time to avoid parasitics impuls
-#define TIME_OUT            500   // Timeout to output the hits sum     
-#define LATCH_PIN           3     // Timeout to output the hits sum     
+#define TIME_OUT            800   // Timeout to output the hits sum     
+#define CALL_PIN            3     // Timeout to output the hits sum     
 
 boolean piezoState = false;
 boolean lastPiezoState = false;
@@ -43,12 +47,13 @@ uint8_t hitsCount = 0;
 uint8_t hits = 0;
 
 boolean ledState = false;
-int del = 0;
+int blinkDelay = 10000;
 
 ///////////////////////// SETUP
 void setup() {
-  //TinyWireS.begin(I2C_SLAVE_ADDR);
-
+  TinyWireS.begin(I2C_SLAVE_ADDR);
+  // Serial.begin(115200);
+  digitalWrite(CALL_PIN, LOW);
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);
 
@@ -62,42 +67,44 @@ void loop() {
   int sensorReading = analogRead( PIEZO_PIN_INPUT );  // Get current state
 
   if ( sensorReading > THRESHOLD ) {
+    // Serial.println(sensorReading);
     piezoState = HIGH;
-    digitalWrite(LED_PIN, HIGH);
-    delay(100);
+    // digitalWrite(LED_PIN, HIGH);
+    // delay(100);
   }
   else {
     piezoState = LOW;
-    digitalWrite(LED_PIN, LOW);
+    // digitalWrite(LED_PIN, LOW);
   }
-  /*
-    // Catch the rizing adge and reset the timer
-    if ( piezoState != lastPiezoState && lastPiezoState == LOW ) timer = 0;
 
+  // Catch the rizing adge and reset the timer
+  if ( piezoState != lastPiezoState && lastPiezoState == LOW ) {
     // Debounce fonction
     if ( timer > DEBOUNCE_TIME ) {
       hitsCount++;
+      timer = 0;
     }
+  }
 
-    // If the button released state is stable, report number of clicks and start new cycle
-    if ( timer > TIME_OUT && hitsCount != 0 ) {
-      hits = hitsCount;
-      hitsCount = 0;
-      Serial.println(hits);
-    }
+  // If the button released state is stable, report number of clicks and start new cycle
+  if ( timer > TIME_OUT && hitsCount != 0 ) {
+    hits = hitsCount;
+    hitsCount = 0;
+    digitalWrite(CALL_PIN, HIGH);
+  }
 
-    lastPiezoState = piezoState;
+  if (TinyWireS.available() > 0) {      // if we get an I2C message
+    if (hits == 1) blinkDelay = 250; TinyWireS.send('A'); // Sends requested byte to the master
+    if (hits == 2) blinkDelay = 500; TinyWireS.send('B'); // Sends requested byte to the master
+    if (hits == 3) blinkDelay = 1000; TinyWireS.send('C'); // Sends requested byte to the master
+    digitalWrite(CALL_PIN, LOW);
+  }
 
-    if (TinyWireS.available() > 0) {      // if we get an I2C message
-      if (hits == 1) del = 10; TinyWireS.send('A'); // Sends requested byte to the master
-      if (hits == 2) del = 20; TinyWireS.send('B'); // Sends requested byte to the master
-      if (hits == 3) del = 50; TinyWireS.send('C'); // Sends requested byte to the master
-    }
+  if (timerLed > blinkDelay) {
+    timerLed = 0;
+    ledState = ! ledState;
+    digitalWrite(LED_PIN, ledState);
+  }
 
-    if (timerLed > del) {
-      timerLed = 0;
-      ledState = ! ledState;
-      digitalWrite(LED_PIN, ledState);
-    }
-  */
+  lastPiezoState = piezoState;
 }
