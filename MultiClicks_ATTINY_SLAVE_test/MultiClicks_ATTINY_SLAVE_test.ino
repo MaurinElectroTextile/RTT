@@ -22,79 +22,53 @@
 */
 
 #include <elapsedMillis.h>        // Library to take care of the timer overflow
-#include "TinyWireS.h"            // Wire lib for ATTiny85
+#include "TinyWireS.h"            // Get this from https://github.com/rambo/TinyWire
 
 elapsedMillis timer;
 
 #define I2C_SLAVE_ADDR      0x27  // I2C slave address
 
 #define LED_PIN             1     // LED_BUILTIN
-#define PIEZO_PIN_INPUT     3     // Piezo input PIN
+#define PIEZO_PIN_INPUT     5     // Piezo input PIN
 #define CALL_PIN            4     // Pin to call (wake up) the Master     
 
-#define THRESHOLD           29    // Threshold for the piezo analog readings
+#define THRESHOLD           10   // Threshold for the piezo analog readings
 #define DEBOUNCE_TIME       20    // Debounce time to avoid parasitics impuls
 #define TIME_OUT            800   // Timeout to output the hits sum   
 
 boolean piezoState = false;
 boolean lastPiezoState = false;
-uint8_t hitsSum = 0;
 uint8_t hitsCount = 0;
+uint8_t hits = 2;
 
 byte incomingByte = 0;
 
 void requestEvent() {
-  TinyWireS.send(hitsCount);
+  TinyWireS.send(hits);
 }
 
 ///////////////////////// SETUP
-void setup() {
-  analogReference( DEFAULT );
-  
+void setup() {  
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);
 
-  // pinMode(CALL_PIN, INPUT_PULLUP); // NOT WORKING!?
+  // pinMode(CALL_PIN, INPUT_PULLUP);
   pinMode(CALL_PIN, OUTPUT);
   digitalWrite(CALL_PIN, HIGH);
-
+  
   TinyWireS.begin(I2C_SLAVE_ADDR);
   TinyWireS.onRequest(requestEvent);
-
+  
   timer = 0;
 }
 
 ///////////////////////// LOOP
 void loop() {
-
-  int sensorReading = analogRead( PIEZO_PIN_INPUT );  // Get current state
-
-  if ( sensorReading > THRESHOLD ) {
-    // Serial.println(sensorReading);
-    digitalWrite(LED_PIN, HIGH);
-    tws_delay(1000);
-    piezoState = HIGH;
-  }
-  else {
-    piezoState = LOW;
-    digitalWrite(LED_PIN, LOW);
-  }
-  // Catch the rizing adge and reset the timer
-  if ( piezoState != lastPiezoState && lastPiezoState == LOW ) {
-    // Debounce fonction
-    if ( timer > DEBOUNCE_TIME ) {
-      digitalWrite(CALL_PIN, HIGH);
-      // digitalWrite(LED_PIN, LOW);
-      hitsSum++;
-      timer = 0;
-    }
-  }
-  // If the button released state is stable, report number of clicks and start new cycle
-  if ( timer > TIME_OUT && hitsSum != 0 ) {
-    hitsCount = hitsSum;
-    hitsSum = 0;
-    digitalWrite(CALL_PIN, LOW); // Call the Master (Wake up)
-    // digitalWrite(LED_PIN, HIGH);
-  }
-  lastPiezoState = piezoState;
+  
+  digitalWrite(LED_PIN, LOW);
+  digitalWrite(CALL_PIN, LOW);
+  tws_delay(1000);
+  digitalWrite(LED_PIN, HIGH);
+  digitalWrite(CALL_PIN, HIGH);
+  tws_delay(1000);
 }
