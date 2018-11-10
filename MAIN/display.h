@@ -10,20 +10,14 @@
 #include "weather.h"
 #include "imagedata.h"
 
-/*
-  BUSY    D2-GPIO4
-  RST     D4-GPIO2
-  DC      D3-GPIO0
-  CS      D1-GPIO5 (I've changed CS pin from GPIO15 to GPIO5 as Waveshare EPD makes GPIO15 high when NodeMCU restarts).
-  CLK     D5-GPIO14
-  DIN     D7-GPIO13
-  GND     GND
-  3.3V    3.3V
-*/
+// #define LED_BUILTIN  D0
 
-#define CS_PIN    D1
-#define DC_PIN    D3
-#define RST_PIN   D4
+#define BUSY_PIN  D6 // SPI MISO_PIN -> D6_GPIO12
+#define RST_PIN   D0 // LED_BUILTIN - CONFLICT
+#define DC_PIN    D3 // 
+#define CS_PIN    D8 // SPI SS_PIN -> D8_GPIO15
+#define CLK_PIN   D5 // SPI CLK_PIN -> D5_GPIO14
+#define DIN_PIN   D7 // SPI MOSI_PIN -> D7_GPIO13
 
 #include "Fonts/Lato_Bold10pt7b.h"
 #include "Fonts/Lato_Bold12pt7b.h"
@@ -31,10 +25,10 @@
 
 #define WEATHER_ICON_WIDTH  39
 #define WEATHER_ICON_HEIGHT 37
-#define ENERGY_ICON_WIDTH  20
-#define ENERGY_ICON_HEIGHT 22
+#define ENERGY_ICON_WIDTH   20
+#define ENERGY_ICON_HEIGHT  22
 
-void initDisplay();
+void displayInit();
 void Draw_EPD();
 void drawWeatherIcon(int posX, int posY, int conditionId);
 void drawEnergyIcon(int posX, int posY);

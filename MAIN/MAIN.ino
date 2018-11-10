@@ -1,24 +1,15 @@
-#include <Ticker.h>
 #include <ESP8266WiFi.h>
 
+#include "capteur.h"
 #include "NTPclient.h"
 #include "weather.h"
 #include "energy.h"
 #include "imagedata.h"
 #include "display.h"
 
-#define WIFI_SSID     "Chevrette"
-#define WIFI_PWD      "ch0c0latchienjaune"
+#define WIFI_SSID     "Les_Bernards"
+#define WIFI_PWD      "michtopatato"
 
-// #define WIFI_SSID     "Flying-Phone-N"
-// #define WIFI_PWD      "PASS"
-
-#define REQ_INTERVAL_SEC  20
-
-bool requestFlag = false;
-Ticker ticker;
-
-void tickerHandler();
 bool configWiFi();
 
 /////////////////////////// SETUP
@@ -32,33 +23,30 @@ void setup() {
   }
 
   /* Initialize GxEPD library */
-  initDisplay();
+  displayInit();
 
   /* Initialize NTPClient library */
   timeClientBegin();
   timeClientUpdate();
-  
-  /* Set ticker as 1 minutes */
-  ticker.attach(REQ_INTERVAL_SEC, tickerHandler);
 
+  tapSensInit();
+  Serial.print("DONE_SETUP");
 }
 
 /////////////////////////// LOOP
 void loop() {
 
-  if (requestFlag) {
-    if ( requestWeatherDaily() && requestWeatherForecast() && energyUpdate() ) {   // Get informations
-      Draw_EPD();
-    }
-    // delay(3000);
-    requestFlag = false;
+  tapSens();
+
+  if (incomingByte == 1) {
+    Serial.println("Today");
+    Draw_EPD();
+    delay(1000);
+  } else {
+    // Serial.println("RIEN");
   }
 }
 
-void tickerHandler() {
-  /* If you call requestWeatherInfo directly inside ticker callback function, HttpClient doesn't work properly */
-  requestFlag = true;
-}
 
 bool configWiFi() {
   Serial.println();

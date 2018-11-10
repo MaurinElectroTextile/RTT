@@ -4,10 +4,10 @@
 // Maximum width and height: 128 and 296
 
 GxIO_Class io(SPI, CS_PIN, DC_PIN, RST_PIN);
-GxEPD_Class display(io);
+GxEPD_Class display(io, RST_PIN, BUSY_PIN);
 
 /* Initialize GxEPD library */
-void initDisplay() {
+void displayInit() {
   display.init();
 }
 void Draw_EPD() {
@@ -26,10 +26,12 @@ void Draw_EPD() {
   // drawWeatherIcon(20, 80, 200);
   // drawWeatherIcon(75, 80, 300);
 
-  drawText(20, 140, "min", &Lato_Bold10pt7b);
-  drawText(70, 140, "max", &Lato_Bold10pt7b);
+  drawText(20, 140, "Min", &Lato_Bold10pt7b);
+  drawText(70, 140, "Max", &Lato_Bold10pt7b);
 
   drawEnergyIcon(10, 160);
+
+  // TODO: ADDING LEVELS
 
   showDisplay();
 }
@@ -78,16 +80,11 @@ void drawBackgroundImage() {
 }
 
 void drawText(int posX, int posY, const char* text, const GFXfont * font) {
-  display.setRotation(0);
-  /* set text color */
-  // display.setTextColor(GxEPD_BLACK);
-  display.setTextColor(GxEPD_WHITE);
-  /* set font */
-  display.setFont(font);
-  /* set position */
-  display.setCursor(posX, posY);
-  /* print text */
-  display.print(text);
+  // display.setRotation(0);
+  display.setTextColor(GxEPD_WHITE); // Set text color
+  display.setFont(font);             // Set typo type
+  display.setCursor(posX, posY);     // Set text position
+  display.print(text);               // print text
 }
 
 void drawText(const char* text, const GFXfont * font) {
