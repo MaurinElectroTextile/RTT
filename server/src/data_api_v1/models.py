@@ -5,14 +5,14 @@ from django.db import models
 
 
 class EnergyMeasure(models.Model):
-    dt = models.DateTimeField('update date')
+    dt = models.DateTimeField('update date', unique = True)
     fossil_ratio = models.DecimalField('fossil ration', max_digits = 3, decimal_places = 2, default = 0.0)
     nuclear_ratio = models.DecimalField('nuclear ration', max_digits = 3, decimal_places = 2, default = 0.0)
     renewable_ratio = models.DecimalField('renewable ratio', max_digits = 3, decimal_places = 2, default = 0.0)
 
 
 class WeatherMeasure(models.Model):
-    dt = models.DateTimeField('update date')
+    dt = models.DateTimeField('update date', unique = True)
     temp = models.DecimalField('temperature', max_digits = 5, decimal_places = 2, default = 0.0)
     temp_min = models.DecimalField('minimum temperature', max_digits = 5, decimal_places = 2, default = 0.0)
     temp_max = models.DecimalField('maximum temperature', max_digits = 5, decimal_places = 2, default = 0.0)
