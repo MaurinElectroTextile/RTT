@@ -11,6 +11,9 @@ class EnergyMeasure(models.Model):
     renewable_ratio = models.DecimalField('renewable ratio', max_digits = 3, decimal_places = 2, default = 0.0)
 
     class Meta:
+        indexes = [
+            models.Index(fields = [ 'dt' ]),
+        ]
         ordering = [ '-dt' ]
 
 
@@ -24,4 +27,7 @@ class WeatherMeasure(models.Model):
     description = models.TextField('description', blank = True, default = '')
 
     class Meta:
+        indexes = [
+            models.Index(fields = [ 'dt' ]),
+        ]
         ordering = [ '-dt' ]
