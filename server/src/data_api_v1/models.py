@@ -10,6 +10,9 @@ class EnergyMeasure(models.Model):
     nuclear_ratio = models.DecimalField('nuclear ration', max_digits = 3, decimal_places = 2, default = 0.0)
     renewable_ratio = models.DecimalField('renewable ratio', max_digits = 3, decimal_places = 2, default = 0.0)
 
+    class Meta:
+        ordering = [ '-dt' ]
+
 
 class WeatherMeasure(models.Model):
     dt = models.DateTimeField('update date', unique = True)
@@ -19,3 +22,6 @@ class WeatherMeasure(models.Model):
     cond_id = models.IntegerField('condition id', default = 0)
     cond_text = models.TextField('condition text', blank = True, default = '')
     description = models.TextField('description', blank = True, default = '')
+
+    class Meta:
+        ordering = [ '-dt' ]
