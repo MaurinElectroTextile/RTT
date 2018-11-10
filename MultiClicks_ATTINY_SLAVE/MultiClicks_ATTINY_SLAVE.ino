@@ -1,5 +1,7 @@
 /* PiezoHits & ATTiny-DIGISPARK
 
+  https://www.youtube.com/watch?v=ZDDcz9buKgM
+
   DIGISPARK slave
   Sample a pezo sensor and send char to Arduino NodeMCU master.
 
@@ -28,13 +30,12 @@ elapsedMillis timer;
 
 #define I2C_SLAVE_ADDR      0x27  // I2C slave address
 
-#define LED_PIN             1     // LED_BUILTIN
-#define PIEZO_PIN_INPUT     3     // Piezo input PIN
+#define PIEZO_PIN_INPUT     1     // Piezo input PIN P3
 #define CALL_PIN            4     // Pin to call (wake up) the Master     
 
-#define THRESHOLD           29    // Threshold for the piezo analog readings
-#define DEBOUNCE_TIME       20    // Debounce time to avoid parasitics impuls
-#define TIME_OUT            800   // Timeout to output the hits sum   
+#define THRESHOLD           100   // Threshold for the piezo analog readings
+#define DEBOUNCE_TIME       50    // Debounce time to avoid parasitics impuls
+#define TIME_OUT            300   // Timeout to output the hits sum   
 
 boolean piezoState = false;
 boolean lastPiezoState = false;
@@ -49,10 +50,9 @@ void requestEvent() {
 
 ///////////////////////// SETUP
 void setup() {
-  analogReference( DEFAULT );
-  
-  pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, LOW);
+  analogReference(DEFAULT);
+
+  pinMode(PIEZO_PIN_INPUT, INPUT);
 
   // pinMode(CALL_PIN, INPUT_PULLUP); // NOT WORKING!?
   pinMode(CALL_PIN, OUTPUT);
@@ -67,17 +67,13 @@ void setup() {
 ///////////////////////// LOOP
 void loop() {
 
-  int sensorReading = analogRead( PIEZO_PIN_INPUT );  // Get current state
+  boolean sensorReading = digitalRead(PIEZO_PIN_INPUT);  // Get current state
 
-  if ( sensorReading > THRESHOLD ) {
-    // Serial.println(sensorReading);
-    digitalWrite(LED_PIN, HIGH);
-    tws_delay(1000);
+  if ( sensorReading == true ) {
     piezoState = HIGH;
   }
   else {
     piezoState = LOW;
-    digitalWrite(LED_PIN, LOW);
   }
   // Catch the rizing adge and reset the timer
   if ( piezoState != lastPiezoState && lastPiezoState == LOW ) {

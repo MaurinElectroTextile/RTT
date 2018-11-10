@@ -5,9 +5,14 @@
 // ESP8266     I2C_SDA - D1 (GPIO5)
 // ESP8266     I2C_SCL - D2 (GPIO4)
 
+// #define REQUEST_PIN  2 // ARDUINO PIN 2 || 3 // ESP8266 ALL except D0 (GPIO16)
+#define LED_PIN       13
+
+#define REQUEST_PIN   D8  // ESP8266 ALL except D0 (GPIO16)
+#define SDA_PIN       D1  // Go to Digispark pin P0
+#define SCL_PIN       D2  // Go to Digispark pin P2
+
 #define SLAVE_ADDR  0x27
-#define ANSWER_PIN  2 // ARDUINO PIN 2 || 3 // ESP8266 ALL except D0 (GPIO16)
-#define LED_PIN     13
 
 boolean setMode = false;
 byte incomingByte = 0;
@@ -19,9 +24,9 @@ void setup() {
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);
   
-  pinMode(ANSWER_PIN, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(ANSWER_PIN), requestMode, FALLING);
-  Wire.begin();
+  pinMode(REQUEST_PIN, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(REQUEST_PIN), requestMode, FALLING);
+  Wire.begin(SDA_PIN, SCL_PIN);
 }
 
 void loop() {
