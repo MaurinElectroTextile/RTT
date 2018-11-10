@@ -3,12 +3,6 @@
 
 #include <Wire.h>
 
-// DEFAULT ESP8266 I2C SDA_PIN - D1 (GPIO5)
-// DEFAULT ESP8266 I2C SCL_PIN - D2 (GPIO4)
-
-
-
-
 #define REQUEST_PIN   D4  // ESP8266 ALL except D0 (GPIO16)
 #define SDA_PIN       D1  // ESP8266 D1-GPIO5 is I2C SDA_PIN Go to Digispark P0_PIN
 #define SCL_PIN       D2  // ESP8266 D2-GPIO4 is I2C SDA_PIN Go to Digispark P2_PIN

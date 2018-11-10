@@ -38,12 +38,28 @@ void loop() {
 
   tapSens();
 
-  if (incomingByte == 1) {
-    Serial.println("Today");
-    Draw_EPD();
-    delay(1000);
-  } else {
-    // Serial.println("RIEN");
+  switch (incomingByte) {
+    case 1:
+      Draw_EPD();
+      incomingByte = 0;
+      Serial.println("Today");
+      //
+      break;
+    case 2:
+      Draw_EPD();
+      incomingByte = 0;
+      Serial.println("Tomorrow");
+      //
+      break;
+    case 3:
+      Draw_EPD();
+      incomingByte = 0;
+      Serial.println("Yesterday");
+      //
+      break;
+    default:
+      // default
+      break;
   }
 }
 

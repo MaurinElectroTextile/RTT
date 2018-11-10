@@ -10,11 +10,9 @@ void tapSensRequestMode() {
 
 void tapSens() {
   if (getMode) {
-    Serial.println("GET_INTERRUPT");
     Wire.requestFrom(SLAVE_ADDR, 1);     // request 4 byte from slave (float = 4 bytes)
     while (Wire.available()) {
       incomingByte = Wire.read();
-      Serial.println(incomingByte);
     }
     getMode = false;
   }
