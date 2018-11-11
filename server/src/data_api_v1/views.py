@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from datetime import datetime, date, timedelta
+
 from django.shortcuts import render
 
 from rest_framework import generics
@@ -10,6 +12,7 @@ from rest_framework.reverse import reverse
 
 from .models import EnergyMeasure, WeatherMeasure
 from .serializers import EnergyMeasureSerializer, WeatherMeasureSerializer
+from .providers.openweather import fetchWeatherMeasure
 
 
 @api_view(['GET'])
@@ -45,9 +48,24 @@ class WeatherMeasureDetail(generics.RetrieveUpdateDestroyAPIView):
 
 @api_view(['GET'])
 def get_combined_today(request, format = None):
+    update_forced = ('update' in request.GET)
+    if not update_forced:
+        today = date.today()
+        try:
+            weather = WeatherMeasure.objects.filter(dt__gte = today).order_by('-dt')[0]
+        except IndexError as e:
+            update_forced = True
+    if update_forced:
+        weather_data = fetchWeatherMeasure()[0]
+        try:
+            weather = WeatherMeasure.objects.get(dt = weather_data['dt'])
+        except WeatherMeasure.DoesNotExist as e:
+            weather = WeatherMeasure(**weather_data)
+            weather.save()
+    weather_serializer = WeatherMeasureSerializer(weather)
     jr = {}
     jr['data'] = {}
-    jr['data']['weather'] = {}
+    jr['data']['weather'] = weather_serializer.data
     jr['data']['energy'] = {}
     return Response(jr)
 
