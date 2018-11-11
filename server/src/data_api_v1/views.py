@@ -13,6 +13,7 @@ from rest_framework.reverse import reverse
 from .models import EnergyMeasure, WeatherMeasure
 from .serializers import EnergyMeasureSerializer, WeatherMeasureSerializer
 from .providers.openweather import fetchWeatherCurrent, fetchWeatherForecast
+from .providers.rte import fetchEnergyCurrent, fetchEnergyForecast
 
 
 @api_view(['GET'])
@@ -21,6 +22,8 @@ def index(request, format = None):
         'combined/today': reverse('combined-today', request = request, format = format),
         'combined/tomorrow': reverse('combined-tomorrow', request = request, format = format),
         'combined/yesterday': reverse('combined-yesterday', request = request, format = format),
+        'proxy/energy/current': reverse('proxy-energy-current', request = request, format = format),
+        'proxy/energy/forecast': reverse('proxy-energy-forecast', request = request, format = format),
         'proxy/weather/current': reverse('proxy-weather-current', request = request, format = format),
         'proxy/weather/forecast': reverse('proxy-weather-forecast', request = request, format = format),
         'energy': reverse('energy-list', request = request, format = format),
@@ -72,6 +75,18 @@ def get_combined_yesterday(request, format = None):
     jr['data'] = {}
     jr['data']['weather'] = {}
     jr['data']['energy'] = {}
+    return Response(jr)
+
+
+@api_view(['GET'])
+def proxy_energy_current(request, format = None):
+    jr = fetchEnergyCurrent()
+    return Response(jr)
+
+
+@api_view(['GET'])
+def proxy_energy_forecast(request, format = None):
+    jr = fetchEnergyForecast()
     return Response(jr)
 
 
