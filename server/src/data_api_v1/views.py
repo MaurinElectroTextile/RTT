@@ -15,6 +15,9 @@ from .serializers import EnergyMeasureSerializer, WeatherMeasureSerializer
 @api_view(['GET'])
 def index(request, format = None):
     return Response({
+        'combined/today': reverse('combined-today', request = request, format = format),
+        'combined/tomorrow': reverse('combined-tomorrow', request = request, format = format),
+        'combined/yesterday': reverse('combined-yesterday', request = request, format = format),
         'energy': reverse('energy-list', request = request, format = format),
         'weather': reverse('weather-list', request = request, format = format)
     })
@@ -38,3 +41,31 @@ class WeatherMeasureList(generics.ListAPIView):
 class WeatherMeasureDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = WeatherMeasure.objects.all()
     serializer_class = WeatherMeasureSerializer
+
+
+@api_view(['GET'])
+def get_combined_today(request, format = None):
+    jr = {}
+    jr['data'] = {}
+    jr['data']['weather'] = {}
+    jr['data']['energy'] = {}
+    return Response(jr)
+
+
+@api_view(['GET'])
+def get_combined_tomorrow(request, format = None):
+    jr = {}
+    jr['data'] = {}
+    jr['data']['weather'] = {}
+    jr['data']['energy'] = {}
+    return Response(jr)
+
+
+@api_view(['GET'])
+def get_combined_yesterday(request, format = None):
+    jr = {}
+    jr['data'] = {}
+    jr['data']['weather'] = {}
+    jr['data']['energy'] = {}
+    return Response(jr)
+

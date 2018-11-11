@@ -13,6 +13,9 @@ urlpatterns = [
     path('energy/<int:pk>/', views.EnergyMeasureDetail.as_view(), name = 'energy-detail'),
     path('weather/', views.WeatherMeasureList.as_view(), name = 'weather-list'),
     path('weather/<int:pk>/', views.WeatherMeasureDetail.as_view(), name = 'weather-detail'),
+    path('combined/today', views.get_combined_today, name = 'combined-today'),
+    path('combined/tomorrow', views.get_combined_tomorrow, name = 'combined-tomorrow'),
+    path('combined/yesterday', views.get_combined_yesterday, name = 'combined-yesterday'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
