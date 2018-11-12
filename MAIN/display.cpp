@@ -32,6 +32,7 @@ void Draw_EPD(int when) {
 
   drawText(40, 30, getDayNow(), &Lato_Bold14pt7b);
 
+<<<<<<< HEAD
   drawText(22, 70, String((int)lround(data_p->weather.temp_min)).c_str(), &Lato_Bold11pt7b);
   drawText(80, 70, String((int)lround(data_p->weather.temp_max)).c_str(), &Lato_Bold11pt7b);
   // drawText(22, 70, String("10").c_str(), &Lato_Bold11pt7b);
@@ -41,6 +42,13 @@ void Draw_EPD(int when) {
   drawWeatherIcon(75, 80, data_p->weather.cond_id);
   // drawWeatherIcon(20, 80, 200);
   // drawWeatherIcon(75, 80, 300);
+=======
+  drawText(22, 70, String(weatherInfos.minTemp).c_str(), &Lato_Bold11pt7b);
+  drawText(80, 70, String(weatherInfos.maxTemp).c_str(), &Lato_Bold11pt7b);
+
+  drawWeatherIcon(20, 80, weatherInfos.conditionId);
+  drawWeatherIcon(75, 80, weatherInfos.conditionId);
+>>>>>>> sleep test
 
   drawText(20, 140, "min", &Lato_Bold9pt7b);
   drawText(70, 140, "max", &Lato_Bold9pt7b);

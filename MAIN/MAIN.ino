@@ -17,7 +17,7 @@ bool configWiFi();
 boolean DEBUG_WIFI = true;
 boolean DEBUG = true;
 
-// #define SLEEP 
+#define SLEEP
 
 /////////////////////////// SETUP
 void setup() {
