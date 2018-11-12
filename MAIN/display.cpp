@@ -48,10 +48,10 @@ void Draw_EPD(int when) {
   drawEnergyIcons(10, 160);
 
   //bargraph(int barWidth, int barHeight, int posX, int posY, int barSteps, int value) {
-  bargraph(22, 100, 10, 185, BARGRAPH_STEPS, 20); // LOCALE
-  bargraph(22, 100, 40, 185, BARGRAPH_STEPS, 10); // RENEWABLE
-  bargraph(22, 100, 70, 185, BARGRAPH_STEPS, 8);  // CARBON
-  bargraph(22, 100, 100, 185, BARGRAPH_STEPS, 3); // NUCLEAR
+  bargraph(22, 100, 10, 185, BARGRAPH_STEPS, data_p->weather.cond_id * BARGRAPH_STEPS / 1000); // LOCALE
+  bargraph(22, 100, 40, 185, BARGRAPH_STEPS, (int)lround(data_p->energy.renewable_ratio * BARGRAPH_STEPS)); // RENEWABLE
+  bargraph(22, 100, 70, 185, BARGRAPH_STEPS, (int)lround(data_p->energy.fossil_ratio * BARGRAPH_STEPS));  // CARBON
+  bargraph(22, 100, 100, 185, BARGRAPH_STEPS, (int)lround(data_p->energy.nuclear_ratio * BARGRAPH_STEPS)); // NUCLEAR
 
   showDisplay();
 }
