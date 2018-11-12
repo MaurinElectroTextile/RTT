@@ -25,6 +25,7 @@ GxEPD_Class display(io, RST_PIN, BUSY_PIN);
 void displayInit() {
   display.init();
 }
+
 void Draw_EPD(int when) {
   data_t *data_p = &(data[when]);
 
@@ -33,7 +34,7 @@ void Draw_EPD(int when) {
   drawText(40, 30, getDayNow(), &Lato_Bold14pt7b);
 
   drawText(22, 70, String((int)lround(data_p->weather.temp_min)).c_str(), &Lato_Bold11pt7b);
-  drawText(22, 70, String((int)lround(data_p->weather.temp_max)).c_str(), &Lato_Bold11pt7b);
+  drawText(80, 70, String((int)lround(data_p->weather.temp_max)).c_str(), &Lato_Bold11pt7b);
 
   drawWeatherIcon(20, 80, data_p->weather.cond_id);
   drawWeatherIcon(75, 80, data_p->weather.cond_id);

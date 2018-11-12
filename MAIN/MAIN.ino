@@ -52,7 +52,9 @@ void loop() {
   }
   switch (taps) {
     case 1:
+    
     case 2:
+    
     case 3:
       updateNeeded = true;
       break;
