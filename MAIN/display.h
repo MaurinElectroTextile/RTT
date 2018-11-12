@@ -38,6 +38,7 @@ void drawBackgroundImage();
 void drawText(int posX, int posY, const char* text, const GFXfont * font);
 void drawText(const char* text, const GFXfont * font);
 void bargraph(int barWidth, int barHeight, int posX, int posY, int barSteps, int value);
+void Draw_loadingIcon();
 void showDisplay();
 
 #endif /*__DISPAY_H__*/

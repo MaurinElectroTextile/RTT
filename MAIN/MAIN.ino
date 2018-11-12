@@ -73,6 +73,7 @@ void loop() {
   if (updateNeeded) {
     timeClientUpdate();
     getDay(day_delta);
+    Draw_loadingIcon();
     fetchData(when);
     Draw_EPD(when);
   }

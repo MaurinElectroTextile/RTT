@@ -6,7 +6,6 @@
 
 #include "NTPclient.h"
 
-
 #define DATA_API_HOST  "api.rtt.in-net-we-trust.com"
 #define DATA_API_PORT  80
 #define DATA_API_URL   "/data/v1/combined/"
