@@ -17,6 +17,36 @@ rte_auth_token = ''
 rte_auth_expiry_date = datetime.fromtimestamp(0, timezone.utc)
 
 
+RTE_PRODUCTION_TYPES = {
+    'BIOMASS': 'renewable',
+    'FOSSIL_BROWN_COAL_LIGNITE': 'fossil',
+    'FOSSIL_COAL_DERIVED_GAS': 'fossil',
+    'FOSSIL_GAS': 'fossil',
+    'FOSSIL_HARD_COAL': 'fossil',
+    'FOSSIL_OIL': 'fossil',
+    'FOSSIL_OIL_SHALE': 'fossil',
+    'FOSSIL_PEAT': 'fossil',
+    'GEOTHERMAL': 'renewable',
+    'HYDRO_PUMPED_STORAGE': 'renewable',
+    'HYDRO_RUN_OF_RIVER_AND_POUNDAGE': 'renewable',
+    'HYDRO_WATER_RESERVOIR': 'renewable',
+    'MARINE': 'renewable',
+    'NUCLEAR': 'nuclear',
+    'OTHER_RENEWABLE': 'renewable',
+    'SOLAR': 'renewable',
+    'WASTE': 'waste',
+    'WIND_OFFSHORE': 'renewable',
+    'WIND_ONSHORE': 'renewable',
+    'OTHER': 'other',
+}
+
+
+def getProductionCategory(pt):
+    if pt in RTE_PRODUCTION_TYPES:
+        return RTE_PRODUCTION_TYPES[pt]
+    return 'other'
+
+
 def getAuthToken():
     global rte_auth_expiry_date
     global rte_auth_token

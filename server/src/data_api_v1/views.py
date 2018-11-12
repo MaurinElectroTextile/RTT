@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from datetime import datetime, date, timedelta
+from dateutil import parser
 
 from django.db.models import Min, Max
 from django.shortcuts import render
@@ -15,7 +16,7 @@ from rest_framework.reverse import reverse
 from .models import EnergyMeasure, WeatherMeasure
 from .serializers import EnergyMeasureSerializer, WeatherMeasureSerializer
 from .providers.openweather import fetchWeatherCurrent, fetchWeatherForecast
-from .providers.rte import fetchEnergyCurrent, fetchEnergyForecast
+from .providers.rte import fetchEnergyCurrent, fetchEnergyForecast, getProductionCategory
 
 
 @api_view(['GET'])
@@ -51,6 +52,50 @@ class WeatherMeasureList(generics.ListAPIView):
 class WeatherMeasureDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = WeatherMeasure.objects.all()
     serializer_class = WeatherMeasureSerializer
+
+
+def updateEnergy(jo):
+    dt = parser.parse(jo['dt'])
+    d = dt.date()
+    try:
+        m = EnergyMeasure.objects.get(dt = dt)
+        return m
+    except EnergyMeasure.DoesNotExist:
+        m = EnergyMeasure(d = d, dt = dt)
+    total = jo['total']
+    m.fossil_ratio = jo['fossil'] / total
+    m.nuclear_ratio = jo['nuclear'] / total
+    m.renewable_ratio = jo['renewable'] / total
+    m.save()
+    return m
+
+
+def getCurrentEnergy():
+    jo = fetchEnergyCurrent()
+    jr = []
+    ja = jo['actual_generations_per_production_type']
+    n_pt = len(ja)
+    n_val = len(ja[0]['values'])
+    for i_val in range(0, n_val - 1):
+        je = {}
+        je['dt'] = ja[0]['values'][i_val]['updated_date']
+        je['total'] = 0
+        for i_pt in range(0, n_pt - 1):
+            pt = ja[i_pt]
+            pc = getProductionCategory(pt['production_type'])
+            val = pt['values'][i_val]['value']
+            if pc not in je:
+                je[pc] = 0
+            je[pc] += val
+            je['total'] += val
+        jr.append(je)
+    jo = jr
+    jr = ''
+    for je in jo:
+        m = updateEnergy(je)
+    s = EnergyMeasureSerializer(m)
+    return s.data
+
 
 
 def updateWeather(jo):
@@ -129,7 +174,7 @@ def get_combined_today(request, format = None):
     jr = {}
     jr['data'] = {}
     jr['data']['weather'] = getCurrentWeather()
-    jr['data']['energy'] = {}
+    jr['data']['energy'] = getCurrentEnergy()
     return Response(jr)
 
 
