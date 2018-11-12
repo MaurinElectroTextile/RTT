@@ -4,8 +4,8 @@
 
 #define WIFI_DEBUG  1
 
-#define WIFI_SSID     "SSID"
-#define WIFI_PWD      "PASS"
+#define WIFI_SSID     "Chevrette"
+#define WIFI_PWD      "ch0c0latchienjaune"
 
 
 bool wifiSetup(void) {
@@ -15,12 +15,12 @@ bool wifiSetup(void) {
 
   if (!WiFi.begin(WIFI_SSID, WIFI_PWD)) {
 #ifdef WIFI_DEBUG
-    Serial.println("ERROR: WiFi.begin");
+    Serial.println(F("ERROR: WiFi.begin"));
 #endif
     return false;
   }
 #ifdef WIFI_DEBUG
-  Serial.println("OK: WiFi.begin");
+  Serial.println(F("OK: WiFi.begin"));
 #endif
 
   while (WiFi.status() != WL_CONNECTED) {
@@ -31,7 +31,7 @@ bool wifiSetup(void) {
   }
 #ifdef WIFI_DEBUG
   Serial.println();
-  Serial.println("OK: WiFi connected");
+  Serial.println(F("OK: WiFi connected"));
 #endif
   return true;
 }

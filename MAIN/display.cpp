@@ -34,9 +34,6 @@
 #define CLK_PIN   D5 // SPI CLK_PIN -> D5_GPIO14
 #define DIN_PIN   D7 // SPI MOSI_PIN -> D7_GPIO13
 
-#define DISPLAY_WIDTH  128
-#define DISPLAY_HEIGHT 296
-
 #define WEATHER_ICON_WIDTH  39
 #define WEATHER_ICON_HEIGHT 37
 #define ENERGY_ICON_WIDTH   20
@@ -70,36 +67,32 @@ void Draw_EPD(int when) {
 
   drawText(40, 30, day, &Lato_Bold14pt7b);
 
-  drawText(22, 70, String((int)lround(data_p->weather.temp_min)).c_str(), &Lato_Bold11pt7b);
+  drawText(25, 70, String((int)lround(data_p->weather.temp_min)).c_str(), &Lato_Bold11pt7b);
   drawText(80, 70, String((int)lround(data_p->weather.temp_max)).c_str(), &Lato_Bold11pt7b);
 
   drawWeatherIcon(20, 80, data_p->weather.cond_id);
   drawWeatherIcon(75, 80, data_p->weather.cond_id);
 
-  drawText(20, 140, "min", &Lato_Bold9pt7b);
-  drawText(70, 140, "max", &Lato_Bold9pt7b);
+  drawText(25, 130, "min", &Lato_Bold9pt7b);
+  drawText(75, 130, "max", &Lato_Bold9pt7b);
 
-  drawEnergyIcons(10, 160);
+  drawEnergyIcons(0, 155);
 
   //bargraph(int barWidth, int barHeight, int posX, int posY, int barSteps, int value) {
-  bargraph(22, 100, 10, 185, BARGRAPH_STEPS, data_p->weather.cond_id * BARGRAPH_STEPS / 1000); // LOCALE
-  bargraph(22, 100, 40, 185, BARGRAPH_STEPS, (int)lround(data_p->energy.renewable_ratio * BARGRAPH_STEPS)); // RENEWABLE
-  bargraph(22, 100, 70, 185, BARGRAPH_STEPS, (int)lround(data_p->energy.fossil_ratio * BARGRAPH_STEPS));  // CARBON
-  bargraph(22, 100, 100, 185, BARGRAPH_STEPS, (int)lround(data_p->energy.nuclear_ratio * BARGRAPH_STEPS)); // NUCLEAR
+  bargraph(22, 100, 8, 185, BARGRAPH_STEPS, data_p->weather.cond_id * BARGRAPH_STEPS / 1000); // LOCALE
+  bargraph(22, 100, 38, 185, BARGRAPH_STEPS, (int)lround(data_p->energy.renewable_ratio * BARGRAPH_STEPS)); // RENEWABLE
+  bargraph(22, 100, 68, 185, BARGRAPH_STEPS, (int)lround(data_p->energy.fossil_ratio * BARGRAPH_STEPS));  // CARBON
+  bargraph(22, 100, 98, 185, BARGRAPH_STEPS, (int)lround(data_p->energy.nuclear_ratio * BARGRAPH_STEPS)); // NUCLEAR
 
   showDisplay();
 }
 
 void drawEnergyIcons(int posX, int posY) {
   /* Draw energy bitmap images */
-  // display.drawBitmap(LOCALE, posX + 0, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
-  // display.drawBitmap(RENEWABLE, posX + 28, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
-  // display.drawBitmap(CARBON, posX + 56, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
-  // display.drawBitmap(NUCLEAR, posX + 82, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
-  display.drawExampleBitmap(LOCALE, posX + 0, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
-  display.drawExampleBitmap(RENEWABLE, posX + 28, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
-  display.drawExampleBitmap(CARBON, posX + 56, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
-  display.drawExampleBitmap(NUCLEAR, posX + 82, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
+  display.drawBitmap(LOCALE, posX + 8, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
+  display.drawBitmap(RENEWABLE, posX + 38, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
+  display.drawBitmap(CARBON, posX + 68, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
+  display.drawBitmap(NUCLEAR, posX + 98, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
 }
 
 const uint8_t *getWeatherBitmap(int conditionId) {
@@ -131,16 +124,21 @@ const uint8_t *getWeatherBitmap(int conditionId) {
   return bitmap;
 }
 
+
+void Draw_loadingIcon(void) {
+  /* Draw energy bitmap images */
+  display.fillScreen(GxEPD_BLACK);
+  display.drawBitmap(hourglass, 14, 100, 100, 100, GxEPD_BLACK, GxEPD::bm_default);
+  display.updateWindow(0, 0, display.width(), display.height());
+}
+
 void drawWeatherIcon(int posX, int posY, int conditionId) {
   const uint8_t* bitmap = getWeatherBitmap(conditionId);
-  // display.drawBitmap(bitmap, posX, posY, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
-  display.drawExampleBitmap(bitmap, posX, posY, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
+  display.drawBitmap(bitmap, posX, posY, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
 }
 
 void drawBackgroundImage(void) {
   /* Clear screen */
-  display.fillScreen(GxEPD_BLACK);
-  display.fillScreen(GxEPD_BLACK);
   display.fillScreen(GxEPD_BLACK);
 }
 
@@ -157,7 +155,6 @@ void drawText(const char* text, const GFXfont * font) {
   display.print(text);
 }
 
-//bargraph(22, 120, 20, 10, 160, 8);
 void bargraph(int barWidth, int barHeight, int posX, int posY, int barSteps, int value) {
   uint8_t V_SPACE = (int)(barHeight / barSteps);
   uint8_t ledWidth = barWidth;
@@ -171,20 +168,8 @@ void bargraph(int barWidth, int barHeight, int posX, int posY, int barSteps, int
   }
 }
 
-void Draw_loadingIcon(void) {
-  /* Draw energy bitmap images */
-  display.fillScreen(GxEPD_BLACK);
-  // display.drawBitmap(hourglass, 14, 100, 100, 100, GxEPD_BLACK, GxEPD::bm_default);
-  display.drawExampleBitmap(hourglass, 14, 100, 100, 100, GxEPD_BLACK, GxEPD::bm_default);
-
-  //display.update();
-  display.updateWindow(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT);
-}
-
 void showDisplay(void) {
   /* show frame buffer */
-  //display.update();
-  display.updateWindow(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT);
-  display.updateWindow(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT);
-  display.updateWindow(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+  //display.updateWindow(0, 0, display.width(), display.height());
+  display.update();
 }
