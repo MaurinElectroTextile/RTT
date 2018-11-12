@@ -15,6 +15,9 @@
 #include "data.h"
 
 
+#define BARGRAPH_STEPS  20
+
+
 GxIO_Class io(SPI, CS_PIN, DC_PIN, RST_PIN);
 GxEPD_Class display(io, RST_PIN, BUSY_PIN);
 
@@ -45,10 +48,10 @@ void Draw_EPD(int when) {
   drawEnergyIcons(10, 160);
 
   //bargraph(int barWidth, int barHeight, int posX, int posY, int barSteps, int value) {
-  bargraph(22, 100, 10, 185, 20, 20); // LOCALE
-  bargraph(22, 100, 40, 185, 20, 10); // RENEWABLE
-  bargraph(22, 100, 70, 185, 20, 8);  // CARBON
-  bargraph(22, 100, 100, 185, 20, 3); // NUCLEAR
+  bargraph(22, 100, 10, 185, BARGRAPH_STEPS, 20); // LOCALE
+  bargraph(22, 100, 40, 185, BARGRAPH_STEPS, 10); // RENEWABLE
+  bargraph(22, 100, 70, 185, BARGRAPH_STEPS, 8);  // CARBON
+  bargraph(22, 100, 100, 185, BARGRAPH_STEPS, 3); // NUCLEAR
 
   showDisplay();
 }
