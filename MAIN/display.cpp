@@ -41,11 +41,11 @@ void Draw_EPD() {
 
   drawEnergyIcon(10, 160);
 
-  //bargraph(int barWidth, int barHeight, int barSteps, int posX, int posY, int value) {
-  bargraph(20, 200, 10, 10, 200, 8); // LOCALE
-  bargraph(20, 200, 10, 40, 200, 8); // RENEWABLE
-  bargraph(20, 200, 10, 70, 200, 8); // CARBON
-  bargraph(20, 200, 10, 100, 200, 8); // NUCLEAR
+  //bargraph(int barWidth, int barHeight, int posX, int posY, int barSteps, int value) {
+  bargraph(22, 100, 10, 185, 20, 20); // LOCALE
+  bargraph(22, 100, 40, 185, 20, 10); // RENEWABLE
+  bargraph(22, 100, 70, 185, 20, 8);  // CARBON
+  bargraph(22, 100, 100, 185, 20, 3); // NUCLEAR
 
   showDisplay();
 }
@@ -106,15 +106,17 @@ void drawText(const char* text, const GFXfont * font) {
   display.print(text);
 }
 
-//  bargraph(20, 200, 10, 220, 10, 8);
-void bargraph(int barWidth, int barHeight, int barSteps, int posX, int posY, int value) {
+//bargraph(22, 120, 20, 10, 160, 8);
+void bargraph(int barWidth, int barHeight, int posX, int posY, int barSteps, int value) {
   uint8_t V_SPACE = (int)(barHeight / barSteps);
-  uint8_t ledWidth = barWidth - 4;
-  uint8_t ledHeight = V_SPACE - 10;
+  uint8_t ledWidth = barWidth;
+  uint8_t ledHeight = V_SPACE - 5;
+
+  display.drawRect(posX, posY, barWidth, barHeight, GxEPD_WHITE);
 
   for (int i = 0; i < value; i++) {
-    display.drawRect(posX, (posY + V_SPACE * barSteps) - (value * V_SPACE), ledWidth, ledHeight, GxEPD_WHITE);
-    display.fillRect(posX, (posY + V_SPACE * barSteps) - (value * V_SPACE), ledWidth, ledHeight, GxEPD_WHITE);
+    display.drawRect(posX, (posY + barHeight) - V_SPACE * i, ledWidth, ledHeight, GxEPD_WHITE);
+    display.fillRect(posX, (posY + barHeight) - V_SPACE * i, ledWidth, ledHeight, GxEPD_WHITE);
   }
 }
 

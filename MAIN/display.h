@@ -38,7 +38,7 @@ void drawEnergyIcon(int posX, int posY);
 void drawBackgroundImage();
 void drawText(int posX, int posY, const char* text, const GFXfont * font);
 void drawText(const char* text, const GFXfont * font);
-void bargraph(int barWidth, int barHeight, int barSteps, int posX, int posY, int value);
+void bargraph(int barWidth, int barHeight, int posX, int posY, int barSteps, int value);
 void showDisplay();
 
 #endif /*__DISPAY_H__*/
