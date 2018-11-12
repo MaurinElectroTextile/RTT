@@ -31,7 +31,7 @@ void Draw_EPD(int when) {
 
   drawBackgroundImage();
 
-  drawText(40, 30, getDayNow(), &Lato_Bold14pt7b);
+  drawText(40, 30, day, &Lato_Bold14pt7b);
 
   drawText(22, 70, String((int)lround(data_p->weather.temp_min)).c_str(), &Lato_Bold11pt7b);
   drawText(80, 70, String((int)lround(data_p->weather.temp_max)).c_str(), &Lato_Bold11pt7b);

@@ -41,7 +41,8 @@ void setup() {
 /////////////////////////// LOOP
 void loop() {
   bool updateNeeded = false;
-
+  int day_delta = 0;
+  int when = -1;
   int taps = tapSens();
 
   if (Serial.available()) {
@@ -52,17 +53,26 @@ void loop() {
   }
   switch (taps) {
     case 1:
-    
+      when = DATA_TODAY;
+      day_delta = 0;
+      updateNeeded = true;
+      break;
     case 2:
-    
+      when = DATA_TOMORROW;
+      day_delta = +1;
+      updateNeeded = true;
+      break;
     case 3:
+      when = DATA_YESTERDAY;
+      day_delta = -1;
       updateNeeded = true;
       break;
     default:
       break;
   }
   if (updateNeeded) {
-    int when = taps - 1;
+    timeClientUpdate();
+    getDay(day_delta);
     fetchData(when);
     Draw_EPD(when);
   }

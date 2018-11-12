@@ -6,10 +6,11 @@
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, NTP_ADDRESS, NTP_OFFSET);
 
-char* days[] = {"Lun.", "Mar.", "Mer.", "Jeu.", "Ven.", "Sam.", "Dim."}; // PROGMEM?
+char* day = NULL;
+char* days[] = {"Dim.", "Lun.", "Mar.", "Mer.", "Jeu.", "Ven.", "Sam."}; // PROGMEM?
 
-char* getDayNow() {
-  return days[timeClient.getDay() - 1];
+const char* getDay(int delta) {
+  return (day = days[(timeClient.getDay() + delta) % 7]);
 }
 
 void getTimeNow() {
