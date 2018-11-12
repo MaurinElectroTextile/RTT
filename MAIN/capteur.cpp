@@ -7,7 +7,6 @@ void tapSensRequestMode() {
   getMode = true;
 }
 
-<<<<<<< HEAD
 int tapSens() {
   if (getMode) {
     Wire.requestFrom(SLAVE_ADDR, 1); // request one byte from slave
@@ -15,15 +14,6 @@ int tapSens() {
       return Wire.read();
     }
     getMode = false;
-=======
-void tapSens() {
-  // if (getMode) {
-    Wire.requestFrom(SLAVE_ADDR, 1); // request one byte from slave
-    while (Wire.available()) {
-      incomingByte = Wire.read();
-    //}
-    //getMode = false;
->>>>>>> sleep test
   }
   return 0;
 }
