@@ -89,7 +89,9 @@ void loop() {
   if ( timer > TIME_OUT && hitsSum != 0 ) {
     hitsCount = hitsSum;
     hitsSum = 0;
-    digitalWrite(CALL_PIN, LOW); // Call the Master (Wake up)
+    digitalWrite(CALL_PIN, LOW); // Call the Master (Wake up!)
+    delayMicroseconds(10);
+    digitalWrite(CALL_PIN, HIGH); // Call the Master (Wake up!)
     // digitalWrite(LED_PIN, HIGH);
   }
   lastPiezoState = piezoState;
