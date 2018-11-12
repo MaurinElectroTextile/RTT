@@ -92,10 +92,14 @@ void Draw_EPD(int when) {
 
 void drawEnergyIcons(int posX, int posY) {
   /* Draw energy bitmap images */
-  display.drawBitmap(LOCALE, posX + 0, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
-  display.drawBitmap(RENEWABLE, posX + 28, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
-  display.drawBitmap(CARBON, posX + 56, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
-  display.drawBitmap(NUCLEAR, posX + 82, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
+  // display.drawBitmap(LOCALE, posX + 0, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
+  // display.drawBitmap(RENEWABLE, posX + 28, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
+  // display.drawBitmap(CARBON, posX + 56, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
+  // display.drawBitmap(NUCLEAR, posX + 82, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
+  display.drawExampleBitmap(LOCALE, posX + 0, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
+  display.drawExampleBitmap(RENEWABLE, posX + 28, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
+  display.drawExampleBitmap(CARBON, posX + 56, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
+  display.drawExampleBitmap(NUCLEAR, posX + 82, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
 }
 
 const uint8_t *getWeatherBitmap(int conditionId) {
@@ -129,14 +133,15 @@ const uint8_t *getWeatherBitmap(int conditionId) {
 
 void drawWeatherIcon(int posX, int posY, int conditionId) {
   const uint8_t* bitmap = getWeatherBitmap(conditionId);
-  display.drawBitmap(bitmap, posX, posY, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
+  // display.drawBitmap(bitmap, posX, posY, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
+  display.drawExampleBitmap(bitmap, posX, posY, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
 }
 
 void drawBackgroundImage(void) {
   /* Clear screen */
-  // display.fillScreen(GxEPD_BLACK);
-  display.drawRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, GxEPD_BLACK);
-  display.fillRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, GxEPD_BLACK);
+  display.fillScreen(GxEPD_BLACK);
+  display.fillScreen(GxEPD_BLACK);
+  display.fillScreen(GxEPD_BLACK);
 }
 
 void drawText(int posX, int posY, const char* text, const GFXfont * font) {
@@ -168,13 +173,18 @@ void bargraph(int barWidth, int barHeight, int posX, int posY, int barSteps, int
 
 void Draw_loadingIcon(void) {
   /* Draw energy bitmap images */
-  display.drawRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, GxEPD_BLACK);
-  display.fillRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, GxEPD_BLACK);
-  display.drawBitmap(hourglass, 14, 100, 100, 100, GxEPD_BLACK, GxEPD::bm_default);
-  display.update();
+  display.fillScreen(GxEPD_BLACK);
+  // display.drawBitmap(hourglass, 14, 100, 100, 100, GxEPD_BLACK, GxEPD::bm_default);
+  display.drawExampleBitmap(hourglass, 14, 100, 100, 100, GxEPD_BLACK, GxEPD::bm_default);
+
+  //display.update();
+  display.updateWindow(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT);
 }
 
 void showDisplay(void) {
   /* show frame buffer */
-  display.update();
+  //display.update();
+  display.updateWindow(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+  display.updateWindow(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+  display.updateWindow(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT);
 }

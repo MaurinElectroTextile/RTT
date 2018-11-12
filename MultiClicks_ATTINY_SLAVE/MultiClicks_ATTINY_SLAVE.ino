@@ -80,7 +80,6 @@ void loop() {
     // Debounce fonction
     if ( timer > DEBOUNCE_TIME ) {
       digitalWrite(CALL_PIN, HIGH);
-      // digitalWrite(LED_PIN, LOW);
       hitsSum++;
       timer = 0;
     }
@@ -89,10 +88,9 @@ void loop() {
   if ( timer > TIME_OUT && hitsSum != 0 ) {
     hitsCount = hitsSum;
     hitsSum = 0;
-    digitalWrite(CALL_PIN, LOW); // Call the Master (Wake up!)
-    delayMicroseconds(10);
-    digitalWrite(CALL_PIN, HIGH); // Call the Master (Wake up!)
-    // digitalWrite(LED_PIN, HIGH);
+    digitalWrite(CALL_PIN, LOW);      // Call the Master (Wake up!)
+    // delayMicroseconds(100);        // Call the Master (Wake up!)
+    // digitalWrite(CALL_PIN, HIGH);  // Call the Master (Wake up!)
   }
   lastPiezoState = piezoState;
 }
