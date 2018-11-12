@@ -14,7 +14,7 @@ class EnergyMeasureSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = EnergyMeasure
-        fields = ('id', 'dt', 'ts', 'fossil_ratio', 'nuclear_ratio', 'renewable_ratio')
+        fields = ('id', 'd', 'dt', 'ts', 'fossil_ratio', 'nuclear_ratio', 'renewable_ratio')
 
 
 class WeatherMeasureSerializer(serializers.ModelSerializer):
@@ -25,5 +25,5 @@ class WeatherMeasureSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = WeatherMeasure
-        fields = ('id', 'dt', 'ts', 'temp', 'temp_min', 'temp_max', 'cond_id', 'cond_text', 'description')
+        fields = ('id', 'd', 'dt', 'ts', 'temp', 'cond_id', 'cond_text', 'description')
 
