@@ -1,10 +1,8 @@
-#include "data.h"
-
 #include <Arduino.h>
-#include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
+#include <ESP8266HTTPClient.h>
 
-#include "NTPclient.h"
+#include "data.h"
 
 #define DATA_API_HOST  "api.rtt.in-net-we-trust.com"
 #define DATA_API_PORT  80

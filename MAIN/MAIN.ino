@@ -1,30 +1,16 @@
-#include <ESP8266WiFi.h>
-
 #include "capteur.h"
-#include "NTPclient.h"
 #include "data.h"
-#include "imagedata.h"
 #include "display.h"
-
-//#define WIFI_SSID     "Les_Bernards"
-//#define WIFI_PWD      "michtopatato"
-
-#define WIFI_SSID     "Chevrette"
-#define WIFI_PWD      "ch0c0latchienjaune"
-
-bool configWiFi();
-
-boolean DEBUG_WIFI = true;
-boolean DEBUG = true;
+#include "wifi.h"
+#include "NTPclient.h"
 
 #define SLEEP
 
 /////////////////////////// SETUP
 void setup() {
-  if (DEBUG_WIFI) Serial.begin(115200);
+  Serial.begin(115200);
 
-  if (!configWiFi()) {
-    if (DEBUG_WIFI) Serial.println("ERROR: configESP");
+  if (!wifiSetup()) {
     while (1);
   }
 
@@ -77,22 +63,4 @@ void loop() {
     fetchData(when);
     Draw_EPD(when);
   }
-}
-
-bool configWiFi() {
-  if (DEBUG_WIFI) Serial.println();
-
-  if (!WiFi.begin(WIFI_SSID, WIFI_PWD)) {
-    if (DEBUG_WIFI) Serial.println("ERROR: WiFi.begin");
-    return false;
-  }
-  if (DEBUG_WIFI) Serial.println("OK: WiFi.begin");
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(100);
-    if (DEBUG_WIFI) Serial.print(".");
-  }
-  if (DEBUG_WIFI) Serial.println();
-  if (DEBUG_WIFI) Serial.println("OK: WiFi connected");
-  return true;
 }

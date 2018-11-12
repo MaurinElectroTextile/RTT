@@ -1,6 +1,19 @@
-#include "display.h"
-#include "NTPclient.h"
 #include "Adafruit_GFX.h"
+
+#include <GxEPD.h>
+#include <GxGDEH029A1/GxGDEH029A1.h>  // 2.9" b/w
+#include <GxIO/GxIO_SPI/GxIO_SPI.h>
+#include <GxIO/GxIO.h>
+
+#include "Fonts/Lato_Bold9pt7b.h"
+#include "Fonts/Lato_Bold11pt7b.h"
+#include "Fonts/Lato_Bold14pt7b.h"
+
+#include "data.h"
+#include "display.h"
+#include "imagedata.h"
+#include "NTPclient.h"
+
 
 /*
   https://github.com/ZinggJM/GxEPD (Version.3.0.2)
@@ -12,7 +25,22 @@
   Height : 6.71 cm
 */
 
-#include "data.h"
+// #define LED_BUILTIN  D0
+
+#define BUSY_PIN  D6 // SPI MISO_PIN -> D6_GPIO12
+#define RST_PIN   D0 // LED_BUILTIN - CONFLICT
+#define DC_PIN    D3 //
+#define CS_PIN    D8 // SPI SS_PIN -> D8_GPIO15
+#define CLK_PIN   D5 // SPI CLK_PIN -> D5_GPIO14
+#define DIN_PIN   D7 // SPI MOSI_PIN -> D7_GPIO13
+
+#define DISPLAY_WIDTH  128
+#define DISPLAY_HEIGHT 296
+
+#define WEATHER_ICON_WIDTH  39
+#define WEATHER_ICON_HEIGHT 37
+#define ENERGY_ICON_WIDTH   20
+#define ENERGY_ICON_HEIGHT  22
 
 
 #define BARGRAPH_STEPS  20
@@ -21,8 +49,17 @@
 GxIO_Class io(SPI, CS_PIN, DC_PIN, RST_PIN);
 GxEPD_Class display(io, RST_PIN, BUSY_PIN);
 
+void drawWeatherIcon(int posX, int posY, int conditionId);
+void drawEnergyIcons(int posX, int posY);
+void drawBackgroundImage(void);
+void drawText(int posX, int posY, const char* text, const GFXfont * font);
+void drawText(const char* text, const GFXfont * font);
+void bargraph(int barWidth, int barHeight, int posX, int posY, int barSteps, int value);
+void showDisplay(void);
+
+
 /* Initialize GxEPD library */
-void displayInit() {
+void displayInit(void) {
   display.init();
 }
 
@@ -95,7 +132,7 @@ void drawWeatherIcon(int posX, int posY, int conditionId) {
   display.drawBitmap(bitmap, posX, posY, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, GxEPD_BLACK, GxEPD::bm_default);
 }
 
-void drawBackgroundImage() {
+void drawBackgroundImage(void) {
   /* Clear screen */
   // display.fillScreen(GxEPD_BLACK);
   display.drawRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, GxEPD_BLACK);
@@ -129,7 +166,7 @@ void bargraph(int barWidth, int barHeight, int posX, int posY, int barSteps, int
   }
 }
 
-void Draw_loadingIcon() {
+void Draw_loadingIcon(void) {
   /* Draw energy bitmap images */
   display.drawRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, GxEPD_BLACK);
   display.fillRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, GxEPD_BLACK);
@@ -137,7 +174,7 @@ void Draw_loadingIcon() {
   display.update();
 }
 
-void showDisplay() {
+void showDisplay(void) {
   /* show frame buffer */
   display.update();
 }

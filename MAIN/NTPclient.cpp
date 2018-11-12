@@ -13,15 +13,10 @@ const char* getDay(int delta) {
   return (day = days[(timeClient.getDay() + delta) % 7]);
 }
 
-void getTimeNow() {
-  timeClient.getFormattedTime();
-  // Serial.println(timeClient.getFormattedTime());
-}
-
-void timeClientUpdate() {
+void timeClientUpdate(void) {
   timeClient.update();
 }
 
-void timeClientBegin() {
+void timeClientBegin(void) {
   timeClient.begin();
 }

@@ -9,9 +9,8 @@
 extern char *day;
 
 const char* getDay(int delta = 0);
-void getTimeNow();
 
-void timeClientUpdate();
-void timeClientBegin();
+void timeClientUpdate(void);
+void timeClientBegin(void);
 
 #endif /*__NTPCLIENT_H__*/
