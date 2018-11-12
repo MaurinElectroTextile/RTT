@@ -1,8 +1,11 @@
 #include "imagedata.h"
 #include <avr/pgmspace.h>
 
-// http://javl.github.io/image2cpp/
-// Brightness threshold: 125
+/*
+  Include custom images
+  Image tool : http://javl.github.io/image2cpp/
+  Set brightness threshold: 125
+*/
 
 //////////////////////////////////// PICTOS WEATHER
 

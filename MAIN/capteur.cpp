@@ -10,7 +10,7 @@ void tapSensRequestMode() {
 
 void tapSens() {
   if (getMode) {
-    Wire.requestFrom(SLAVE_ADDR, 1);     // request 4 byte from slave (float = 4 bytes)
+    Wire.requestFrom(SLAVE_ADDR, 1); // request one byte from slave
     while (Wire.available()) {
       incomingByte = Wire.read();
     }
