@@ -2,8 +2,7 @@
 
 #include "capteur.h"
 #include "NTPclient.h"
-#include "weather.h"
-#include "energy.h"
+#include "data.h"
 #include "imagedata.h"
 #include "display.h"
 
@@ -41,43 +40,29 @@ void setup() {
 
 /////////////////////////// LOOP
 void loop() {
+  bool updateNeeded = false;
 
-  tapSens();
+  int taps = tapSens();
 
-  switch (incomingByte) {
+  if (Serial.available()) {
+    taps = Serial.parseInt();
+    while (Serial.available()) {
+      Serial.read();
+    }
+  }
+  switch (taps) {
     case 1:
-      if (DEBUG) Serial.println("Today");
-      Draw_EPD();
-#ifdef SLEEP
-      if (DEBUG) Serial.println("GO_TP_SLEEP");
-      ESP.deepSleep(0);
-      if (DEBUG) Serial.println("WAKE_UP");
-#endif /*__SLEEP__*/
-      incomingByte = 0;
-      break;
     case 2:
-      if (DEBUG) Serial.println("Tomorrow");
-      Draw_EPD();
-#ifdef SLEEP
-      if (DEBUG) Serial.println("GO_TP_SLEEP");
-      ESP.deepSleep(0);
-      if (DEBUG) Serial.println("WAKE_UP");
-#endif /*__SLEEP__*/
-      incomingByte = 0;
-      break;
     case 3:
-      if (DEBUG) Serial.println("Yesterday");
-      Draw_EPD();
-#ifdef SLEEP
-      if (DEBUG) Serial.println("GO_TP_SLEEP");
-      ESP.deepSleep(0);
-      if (DEBUG) Serial.println("WAKE_UP");
-#endif /*__SLEEP__*/
-      incomingByte = 0;
+      updateNeeded = true;
       break;
     default:
-      // default
       break;
+  }
+  if (updateNeeded) {
+    int when = taps - 1;
+    fetchData(when);
+    Draw_EPD(when);
   }
 }
 

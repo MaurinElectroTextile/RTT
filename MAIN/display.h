@@ -7,7 +7,6 @@
 #include <GxIO/GxIO_SPI/GxIO_SPI.h>
 #include <GxIO/GxIO.h>
 
-#include "weather.h"
 #include "imagedata.h"
 
 // #define LED_BUILTIN  D0
@@ -32,9 +31,9 @@
 #define ENERGY_ICON_HEIGHT  22
 
 void displayInit();
-void Draw_EPD();
+void Draw_EPD(int when);
 void drawWeatherIcon(int posX, int posY, int conditionId);
-void drawEnergyIcon(int posX, int posY);
+void drawEnergyIcons(int posX, int posY);
 void drawBackgroundImage();
 void drawText(int posX, int posY, const char* text, const GFXfont * font);
 void drawText(const char* text, const GFXfont * font);

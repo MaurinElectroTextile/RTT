@@ -12,6 +12,9 @@
   Height : 6.71 cm
 */
 
+#include "data.h"
+
+
 GxIO_Class io(SPI, CS_PIN, DC_PIN, RST_PIN);
 GxEPD_Class display(io, RST_PIN, BUSY_PIN);
 
@@ -19,27 +22,27 @@ GxEPD_Class display(io, RST_PIN, BUSY_PIN);
 void displayInit() {
   display.init();
 }
-void Draw_EPD() {
-  int val = 5;
+void Draw_EPD(int when) {
+  data_t *data_p = &(data[when]);
 
   drawBackgroundImage();
 
   drawText(40, 30, getDayNow(), &Lato_Bold14pt7b);
 
-  drawText(22, 70, String(weatherInfos.minTemp).c_str(), &Lato_Bold11pt7b);
-  drawText(80, 70, String(weatherInfos.maxTemp).c_str(), &Lato_Bold11pt7b);
+  drawText(22, 70, String((int)lround(data_p->weather.temp_min)).c_str(), &Lato_Bold11pt7b);
+  drawText(80, 70, String((int)lround(data_p->weather.temp_max)).c_str(), &Lato_Bold11pt7b);
   // drawText(22, 70, String("10").c_str(), &Lato_Bold11pt7b);
   // drawText(80, 70, String("18").c_str(), &Lato_Bold11pt7b);
 
-  drawWeatherIcon(20, 80, weatherInfos.conditionId);
-  drawWeatherIcon(75, 80, weatherInfos.conditionId);
+  drawWeatherIcon(20, 80, data_p->weather.cond_id);
+  drawWeatherIcon(75, 80, data_p->weather.cond_id);
   // drawWeatherIcon(20, 80, 200);
   // drawWeatherIcon(75, 80, 300);
 
   drawText(20, 140, "min", &Lato_Bold9pt7b);
   drawText(70, 140, "max", &Lato_Bold9pt7b);
 
-  drawEnergyIcon(10, 160);
+  drawEnergyIcons(10, 160);
 
   //bargraph(int barWidth, int barHeight, int posX, int posY, int barSteps, int value) {
   bargraph(22, 100, 10, 185, 20, 20); // LOCALE
@@ -50,7 +53,7 @@ void Draw_EPD() {
   showDisplay();
 }
 
-void drawEnergyIcon(int posX, int posY) {
+void drawEnergyIcons(int posX, int posY) {
   /* Draw energy bitmap images */
   display.drawBitmap(LOCALE, posX + 0, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_WHITE, GxEPD::bm_normal);
   display.drawBitmap(RENEWABLE, posX + 28, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_WHITE, GxEPD::bm_normal);
@@ -58,8 +61,7 @@ void drawEnergyIcon(int posX, int posY) {
   display.drawBitmap(NUCLEAR, posX + 82, posY, ENERGY_ICON_WIDTH, ENERGY_ICON_HEIGHT, GxEPD_WHITE, GxEPD::bm_normal);
 }
 
-void drawWeatherIcon(int posX, int posY, int conditionId) {
-  /* Draw weather bitmap images */
+const uint8_t *getWeatherBitmap(int conditionId) {
   const uint8_t* bitmap;
   if (conditionId >= 200 && conditionId < 300) {
     bitmap = STORM;
@@ -85,6 +87,11 @@ void drawWeatherIcon(int posX, int posY, int conditionId) {
   else {
     bitmap = SUNNY;
   }
+  return bitmap;
+}
+
+void drawWeatherIcon(int posX, int posY, int conditionId) {
+  const uint8_t* bitmap = getWeatherBitmap(conditionId);
   display.drawBitmap(bitmap, posX, posY, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, GxEPD_WHITE, GxEPD::bm_normal);
 }
 

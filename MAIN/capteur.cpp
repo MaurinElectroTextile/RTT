@@ -2,20 +2,20 @@
 #include "capteur.h"
 
 bool getMode = false;
-uint8_t incomingByte = 0;
 
 void tapSensRequestMode() {
   getMode = true;
 }
 
-void tapSens() {
+int tapSens() {
   if (getMode) {
     Wire.requestFrom(SLAVE_ADDR, 1); // request one byte from slave
     while (Wire.available()) {
-      incomingByte = Wire.read();
+      return Wire.read();
     }
     getMode = false;
   }
+  return 0;
 }
 
 void tapSensInit() {

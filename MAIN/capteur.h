@@ -10,10 +10,9 @@
 #define SLAVE_ADDR    0x27
 
 extern bool setMode;
-extern uint8_t incomingByte;
 
 void tapSensInit();
-void tapSens();
+int tapSens();
 void tapSensRequestMode();
 
 #endif /*__CAPTEUR_H__*/
