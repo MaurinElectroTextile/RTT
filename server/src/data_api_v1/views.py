@@ -111,6 +111,21 @@ def getCurrentEnergy():
     return s.data
 
 
+def getTomorrowEnergy():
+    return formatErrorResponse(1, "energy/tomorrow: not implemented")
+
+
+def getYesterdayEnergy():
+    dt = timezone.now() - timedelta(days = 1)
+    d = dt.date()
+    try:
+        m = EnergyMeasure.objects.filter(d__exact = d, dt__lte = dt).order_by('-dt')[0]
+    except IndexError:
+        return formatErrorResponse(1, "energy/yesterday: no data found")
+    s = EnergyMeasureSerializer(m)
+    return s.data
+
+
 
 def updateWeather(jo):
     dt = datetime.fromtimestamp(jo['dt'], timezone.utc)
@@ -189,7 +204,7 @@ def get_combined_tomorrow(request, format = None):
     jr = {}
     jr['data'] = {}
     jr['data']['weather'] = getTomorrowWeather()
-    jr['data']['energy'] = {}
+    jr['data']['energy'] = getTomorrowEnergy()
     return Response(jr)
 
 
@@ -198,7 +213,7 @@ def get_combined_yesterday(request, format = None):
     jr = {}
     jr['data'] = {}
     jr['data']['weather'] = getYesterdayWeather()
-    jr['data']['energy'] = {}
+    jr['data']['energy'] = getYesterdayEnergy()
     return Response(jr)
 
 
