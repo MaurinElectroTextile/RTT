@@ -52,7 +52,7 @@ void setup() {
 
   pinMode(PIEZO_PIN_INPUT, INPUT);
 
-  // pinMode(CALL_PIN, INPUT_PULLUP); // DO NOT WORKI!?
+  // pinMode(CALL_PIN, INPUT_PULLUP); // DO NOT WORK!?
   pinMode(CALL_PIN, OUTPUT);
   digitalWrite(CALL_PIN, LOW);
 
