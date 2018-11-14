@@ -54,6 +54,14 @@ class WeatherMeasureDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = WeatherMeasureSerializer
 
 
+def formatErrorResponse(code, message):
+    jr = {}
+    jr['error'] = {}
+    jr['error']['code'] = code
+    jr['error']['message'] = message
+    return jr
+
+
 def updateEnergy(jo):
     dt = parser.parse(jo['dt'])
     d = dt.date()
@@ -73,9 +81,15 @@ def updateEnergy(jo):
 def getCurrentEnergy():
     jo = fetchEnergyCurrent()
     jr = []
+    if 'actual_generations_per_production_type' not in jo:
+        return formatErrorResponse(1, "energy/current: key 'actual_generations_per_production_type' missing")
     ja = jo['actual_generations_per_production_type']
     n_pt = len(ja)
+    if n_pt == 0:
+        return formatErrorResponse(2, "energy/current: no production type returned")
     n_val = len(ja[0]['values'])
+    if n_pt == 0:
+        return formatErrorResponse(3, "energy/current: no values returned")
     for i_val in range(0, n_val - 1):
         je = {}
         je['dt'] = ja[0]['values'][i_val]['updated_date']
@@ -139,11 +153,7 @@ def getTomorrowWeather():
     try:
         wm = WeatherMeasure.objects.filter(d__exact = d, dt__lte = dt).order_by('-dt')[0]
     except IndexError:
-        jd = {}
-        jd['error'] = {}
-        jd['error']['code'] = 1
-        jd['error']['message'] = 'no data'
-        return jd
+        return formatErrorResponse(1, "weather/tomorrow: no data found")
     ws = WeatherMeasureSerializer(wm)
     jd = ws.data
     jd['temp_min'] = WeatherMeasure.objects.filter(d__exact = d).aggregate(Min('temp'))['temp__min']
@@ -157,11 +167,7 @@ def getYesterdayWeather():
     try:
         wm = WeatherMeasure.objects.filter(d__exact = d, dt__lte = dt).order_by('-dt')[0]
     except IndexError:
-        jd = {}
-        jd['error'] = {}
-        jd['error']['code'] = 1
-        jd['error']['message'] = 'no data'
-        return jd
+        return formatErrorResponse(1, "weather/yesterday: no data found")
     ws = WeatherMeasureSerializer(wm)
     jd = ws.data
     jd['temp_min'] = WeatherMeasure.objects.filter(d__exact = d).aggregate(Min('temp'))['temp__min']
