@@ -92,7 +92,7 @@ def getCurrentEnergy():
         return formatErrorResponse(3, "energy/current: no values returned")
     for i_val in range(0, n_val - 1):
         je = {}
-        je['dt'] = ja[0]['values'][i_val]['updated_date']
+        je['dt'] = ja[0]['values'][i_val]['end_date']
         je['total'] = 0
         for i_pt in range(0, n_pt - 1):
             pt = ja[i_pt]
