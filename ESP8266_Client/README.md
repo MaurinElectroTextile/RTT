@@ -13,6 +13,7 @@ Arduino IDE 1.8.7
 - NTPClient (Version.3.1.0) (https://github.com/arduino-libraries/NTPClient)
 - ArduinoJson (Version.5.13.3) (https://github.com/bblanchon/ArduinoJson)
 - Wire (I2C standar library) https://www.arduino.cc/en/Reference/Wire
+- ElapsedMillis (1.0.4) https://github.com/pfeerick/elapsedMillis
 ### Arduino Flash config
 - NodeMCU 1.0 (ESP-12E Module)
 - CPU Frequency 80 mhz
