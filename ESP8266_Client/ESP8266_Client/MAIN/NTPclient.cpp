@@ -16,7 +16,7 @@ const char* getDay(int delta) {
 }
 
 const char* getDayOfYear(int delta) {
-  return (dayOfYear = timeClient.getEpochTime() / 86400L + 4);
+  return (dayOfYear = (char*)(timeClient.getEpochTime() / 86400L + 4));
 }
 
 void timeClientUpdate(void) {
