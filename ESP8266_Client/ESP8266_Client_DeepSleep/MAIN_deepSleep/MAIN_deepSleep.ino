@@ -1,16 +1,25 @@
+#include <elapsedMillis.h>
+
 #include "capteur.h"
 #include "data.h"
 #include "display.h"
 #include "wifi.h"
 #include "NTPclient.h"
 
-#define SLEEP
+elapsedMillis timer;
 
+#define SLEEP_TIME_OUT 10000
 int taps = 0;
+
+#define SLEEP_DEBUG 0
 
 /////////////////////////// SETUP
 void setup() {
+
+#ifdef SLEEP_DEBUG || WIFI_DEBUG || API_DEBUG
   Serial.begin(115200);
+#endif
+
   /* Initialize GxEPD library */
   displayInit();
 
@@ -28,7 +37,7 @@ void setup() {
 
   /* Request taps count from extarnal MCU (Digispark-ATTiny85) */
   taps = tapSensRequest();
-  // delay(100);
+  timer = 0;
 }
 
 /////////////////////////// LOOP
@@ -37,17 +46,16 @@ void loop() {
   int day_delta = 0;
   int when = -1;
 
+#ifdef SLEEP_DEBUG || WIFI_DEBUG || API_DEBUG
   if (Serial.available()) {
     taps = Serial.parseInt();
     while (Serial.available()) {
       Serial.read();
     }
   }
+#endif
+
   switch (taps) {
-    case 0:
-      //Serial.println("GO_TO_SLEEP");
-      //ESP.deepSleep(0);
-      break;
     case 1:
       when = DATA_TODAY;
       day_delta = 0;
@@ -72,7 +80,11 @@ void loop() {
     Draw_loadingIcon();
     fetchData(when);
     Draw_EPD(when);
-    Serial.println("GO_TO_SLEEP");
-    ESP.deepSleep(0);
+    if (timer > SLEEP_TIME_OUT) {
+#ifdef SLEEP_DEBUG
+      Serial.println("GO_TO_SLEEP");
+#endif
+      ESP.deepSleep(0);
+    }
   }
 }

@@ -2,7 +2,7 @@
 
 #include "wifi.h"
 
-#define WIFI_DEBUG  1
+#define WIFI_DEBUG  0
 
 #define WIFI_SSID     "A10"
 #define WIFI_PWD      "poipoipoi"

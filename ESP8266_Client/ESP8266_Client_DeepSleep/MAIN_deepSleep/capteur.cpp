@@ -14,7 +14,7 @@ int tapSensRequest(void) {
   Wire.requestFrom(SLAVE_ADDR, 1); // request one byte from slave
   while (Wire.available()) {
     uint8_t incomingByte= Wire.read();
-    Serial.printf("Request : %d\r\n", incomingByte);
+    // Serial.printf("Request : %d\r\n", incomingByte);
     return incomingByte;
   }
   return 0;
