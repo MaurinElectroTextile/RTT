@@ -67,7 +67,6 @@ def updateEnergy(jo):
     d = dt.date()
     try:
         m = EnergyMeasure.objects.get(dt = dt)
-        return m
     except EnergyMeasure.DoesNotExist:
         m = EnergyMeasure(d = d, dt = dt)
     total = jo['total']
