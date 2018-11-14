@@ -9,9 +9,7 @@
 
 #define SLAVE_ADDR    0x27
 
-
 bool getMode;
-
 
 void tapSensRequestMode(void) {
   getMode = true;

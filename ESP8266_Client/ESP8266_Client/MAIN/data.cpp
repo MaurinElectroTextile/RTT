@@ -25,6 +25,7 @@ void printData(data_t *data_p) {
   Serial.printf("Weather: Min. Temp.: %5.2f\r\n", data_p->weather.temp_min);
   Serial.printf("Weather: Max. Temp.: %5.2f\r\n", data_p->weather.temp_max);
   Serial.printf("Weather: Condition ID: %d\r\n", data_p->weather.cond_id);
+  Serial.printf("Weather: Clouds: %d\r\n", data_p->weather.clouds);
   Serial.printf("Energy: Fossil ratio : %3.2f\r\n", data_p->energy.fossil_ratio);
   Serial.printf("Energy: Nuclear ratio : %3.2f\r\n", data_p->energy.nuclear_ratio);
   Serial.printf("Energy: Renewable ratio : %3.2f\r\n", data_p->energy.renewable_ratio);
@@ -43,7 +44,7 @@ bool parseData(data_t *data_p, String& payload) {
     data_p->weather.temp_min = root["data"]["weather"]["temp_min"];
     data_p->weather.temp_max = root["data"]["weather"]["temp_max"];
     data_p->weather.cond_id = root["data"]["weather"]["cond_id"];
-    // data_p->weather.cond_id = root["data"]["weather"]["clouds"]; // TODO : clouds
+    data_p->weather.cond_id = root["data"]["weather"]["clouds"]; // TODO : clouds
 
     return true;
   } else {

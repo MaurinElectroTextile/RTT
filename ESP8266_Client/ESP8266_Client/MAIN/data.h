@@ -12,6 +12,7 @@ typedef struct {
     double temp_min;
     double temp_max;
     int cond_id;
+    int clouds; // TODO
   } weather;
 } data_t;
 

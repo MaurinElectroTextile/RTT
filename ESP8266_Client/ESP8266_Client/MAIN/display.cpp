@@ -75,9 +75,14 @@ void Draw_EPD(int when) {
   drawText(75, 130, "max", &Lato_Bold9pt7b);
 
   drawEnergyIcons(0, 155);
+  
+  // SIMULATION PRODUCTION LOCALE 
+  //bargraph(22, 100, 8, 185, BARGRAPH_STEPS, data_p->weather.cond_id * BARGRAPH_STEPS / 1000); // LOCALE
+  int coef = 0.2 * sin(6.28 / 365 * j - 1.39) + 0.8;    // 0.6 et 1
+  int sun = (1 - data_p->weather.clouds * coef) * 1000; //
+  int production = random(200, 400);                    // prod(T0)
+  bargraph(22, 100, 8, 185, BARGRAPH_STEPS, sun * production / sun); // SIMULATION PRODUCTION LOCALE
 
-  //bargraph(int barWidth, int barHeight, int posX, int posY, int barSteps, int value) {
-  bargraph(22, 100, 8, 185, BARGRAPH_STEPS, data_p->weather.cond_id * BARGRAPH_STEPS / 1000); // LOCALE
   bargraph(22, 100, 38, 185, BARGRAPH_STEPS, (int)lround(data_p->energy.renewable_ratio * BARGRAPH_STEPS)); // RENEWABLE
   bargraph(22, 100, 68, 185, BARGRAPH_STEPS, (int)lround(data_p->energy.fossil_ratio * BARGRAPH_STEPS));  // CARBON
   bargraph(22, 100, 98, 185, BARGRAPH_STEPS, (int)lround(data_p->energy.nuclear_ratio * BARGRAPH_STEPS)); // NUCLEAR
