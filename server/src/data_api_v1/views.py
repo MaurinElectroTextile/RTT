@@ -25,6 +25,7 @@ from .providers.rte import fetchEnergyCurrent, fetchEnergyForecast, getProductio
 @api_view(['GET'])
 def index(request, format = None):
     return Response({
+        'combined/update': reverse('combined-update', request = request, format = format),
         'combined/today': reverse('combined-today', request = request, format = format),
         'combined/tomorrow': reverse('combined-tomorrow', request = request, format = format),
         'combined/yesterday': reverse('combined-yesterday', request = request, format = format),
@@ -80,7 +81,7 @@ def updateEnergy(jo):
     return m
 
 
-def getCurrentEnergy():
+def fetchEnergy():
     jo = fetchEnergyCurrent()
     jr = []
     if 'actual_generations_per_production_type' not in jo:
@@ -108,11 +109,28 @@ def getCurrentEnergy():
             je['total'] += val
         jr.append(je)
     jo = jr
+    jr = {}
+    jr['current'] = []
     for je in jo:
         m = updateEnergy(je)
+        s = EnergyMeasureSerializer(m)
+        jr['current'].append(s.data)
+    return jr
+
+
+def getEnergy(dt):
+    d = dt.date()
+    try:
+        m = EnergyMeasure.objects.filter(d__exact = d, dt__lte = dt).order_by('-dt')[0]
+    except IndexError:
+        return formatErrorResponse(1, "energy/yesterday: no data found")
     s = EnergyMeasureSerializer(m)
     return s.data
 
+
+def getCurrentEnergy():
+    dt = timezone.now()
+    return getEnergy(dt)
 
 def getTomorrowEnergy():
     dt = timezone.now() + timedelta(days = 1)
@@ -127,10 +145,6 @@ def getTomorrowEnergy():
         except IndexError:
             return formatErrorResponse(1, "energy/tomorrow: no data found")
         dt = m.dt + timedelta(days = 1)
-        try:
-            EnergyMeasure.objects.filter(d__exact = d, dt__lte = dt).order_by('-dt')[0]
-        except IndexError:
-            return formatErrorResponse(1, "energy/tomorrow: no data found")
         j = {}
         j['dt'] = dt
         j['d'] = dt.date()
@@ -192,13 +206,7 @@ def getTomorrowEnergy():
 
 def getYesterdayEnergy():
     dt = timezone.now() - timedelta(days = 1)
-    d = dt.date()
-    try:
-        m = EnergyMeasure.objects.filter(d__exact = d, dt__lte = dt).order_by('-dt')[0]
-    except IndexError:
-        return formatErrorResponse(1, "energy/yesterday: no data found")
-    s = EnergyMeasureSerializer(m)
-    return s.data
+    return getEnergy(dt)
 
 
 
@@ -218,52 +226,57 @@ def updateWeather(jo):
     return wm
 
 
-def getCurrentWeather():
+def fetchWeather():
+    jr = {}
+    je = fetchWeatherCurrent()
+    m = updateWeather(je)
+    s = WeatherMeasureSerializer(m)
+    jr['current'] = s.data
+    jr['forecast'] = []
     jo = fetchWeatherForecast()
     if 'list' in jo:
         for je in jo['list']:
-            updateWeather(je)
-    jo = fetchWeatherCurrent()
-    dt = datetime.fromtimestamp(jo['dt'], timezone.utc)
+            m = updateWeather(je)
+            s = WeatherMeasureSerializer(m)
+            jr['forecast'].append(s.data)
+    return jr
+
+def getWeather(dt):
     d = dt.date()
-    wm = updateWeather(jo)
-    ws = WeatherMeasureSerializer(wm)
-    jd = ws.data
-    jd['temp_min'] = WeatherMeasure.objects.filter(d__exact = d).aggregate(Min('temp'))['temp__min']
-    jd['temp_max'] = WeatherMeasure.objects.filter(d__exact = d).aggregate(Max('temp'))['temp__max']
-    return jd
+    try:
+        m = WeatherMeasure.objects.filter(d__exact = d, dt__lte = dt).order_by('-dt')[0]
+    except IndexError:
+        return formatErrorResponse(1, "weather: no data found")
+    s = WeatherMeasureSerializer(m)
+    jr = s.data
+    jr['temp_min'] = WeatherMeasure.objects.filter(d__exact = d).aggregate(Min('temp'))['temp__min']
+    jr['temp_max'] = WeatherMeasure.objects.filter(d__exact = d).aggregate(Max('temp'))['temp__max']
+    return jr
+
+
+
+def getCurrentWeather():
+    dt = timezone.now()
+    return getWeather(dt)
 
 
 def getTomorrowWeather():
     dt = timezone.now() + timedelta(days = 1)
-    d = dt.date()
-    jo = fetchWeatherForecast()
-    if 'list' in jo:
-        for je in jo['list']:
-            updateWeather(je)
-    try:
-        wm = WeatherMeasure.objects.filter(d__exact = d, dt__lte = dt).order_by('-dt')[0]
-    except IndexError:
-        return formatErrorResponse(1, "weather/tomorrow: no data found")
-    ws = WeatherMeasureSerializer(wm)
-    jd = ws.data
-    jd['temp_min'] = WeatherMeasure.objects.filter(d__exact = d).aggregate(Min('temp'))['temp__min']
-    jd['temp_max'] = WeatherMeasure.objects.filter(d__exact = d).aggregate(Max('temp'))['temp__max']
-    return jd
+    return getWeather(dt)
 
 
 def getYesterdayWeather():
     dt = timezone.now() - timedelta(days = 1)
-    d = dt.date()
-    try:
-        wm = WeatherMeasure.objects.filter(d__exact = d, dt__lte = dt).order_by('-dt')[0]
-    except IndexError:
-        return formatErrorResponse(1, "weather/yesterday: no data found")
-    ws = WeatherMeasureSerializer(wm)
-    jd = ws.data
-    jd['temp_min'] = WeatherMeasure.objects.filter(d__exact = d).aggregate(Min('temp'))['temp__min']
-    jd['temp_max'] = WeatherMeasure.objects.filter(d__exact = d).aggregate(Max('temp'))['temp__max']
-    return jd
+    return getWeather(dt)
+
+
+@api_view(['GET'])
+def get_combined_update(request, format = None):
+    jr = {}
+    jr['data'] = {}
+    jr['data']['weather'] = fetchWeather()
+    jr['data']['energy'] = fetchEnergy()
+    return Response(jr)
 
 
 @api_view(['GET'])
