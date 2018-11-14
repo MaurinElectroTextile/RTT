@@ -80,11 +80,12 @@ void loop() {
     Draw_loadingIcon();
     fetchData(when);
     Draw_EPD(when);
-    if (timer > SLEEP_TIME_OUT) {
+  }
+  
+  if (timer > SLEEP_TIME_OUT) {
 #ifdef SLEEP_DEBUG
-      Serial.println("GO_TO_SLEEP");
+    Serial.println("GO_TO_SLEEP");
 #endif
-      ESP.deepSleep(0);
-    }
+    ESP.deepSleep(0);
   }
 }
