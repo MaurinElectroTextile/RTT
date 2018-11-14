@@ -25,5 +25,5 @@ class WeatherMeasureSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = WeatherMeasure
-        fields = ('id', 'd', 'dt', 'ts', 'temp', 'cond_id', 'cond_text', 'description')
+        fields = ('id', 'd', 'dt', 'ts', 'temp', 'cloudiness', 'cond_id', 'cond_text', 'description')
 

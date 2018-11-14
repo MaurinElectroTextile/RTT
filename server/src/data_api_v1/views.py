@@ -201,6 +201,7 @@ def updateWeather(jo):
     except WeatherMeasure.DoesNotExist:
         wm = WeatherMeasure(d = d, dt = dt)
     wm.temp = jo['main']['temp']
+    wm.cloudiness = jo['clouds']['all']
     wm.cond_id = jo['weather'][0]['id']
     wm.cond_text = jo['weather'][0]['main']
     wm.description = jo['weather'][0]['description']

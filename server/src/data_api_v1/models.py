@@ -22,6 +22,7 @@ class WeatherMeasure(models.Model):
     d = models.DateField('update date')
     dt = models.DateTimeField('update datetime')
     temp = models.DecimalField('temperature', max_digits = 5, decimal_places = 2, default = 0.0)
+    cloudiness = models.DecimalField('cloudiness', max_digits = 5, decimal_places = 2, default = 0.0)
     cond_id = models.IntegerField('condition id', default = 0)
     cond_text = models.TextField('condition text', blank = True, default = '')
     description = models.TextField('description', blank = True, default = '')
