@@ -123,7 +123,7 @@ def getTomorrowEnergy():
         return formatErrorResponse(1, "energy/tomorrow: no data found")
     dt = timezone.now() + timedelta(days = 1)
     j = {}
-    j['dt'] = m.dt
+    j['dt'] = dt
     j['d'] = dt.date()
     j['fossil_ratio'] = float(m.fossil_ratio) * random.uniform(0.8, 1.2)
     j['renewable_ratio'] = float(m.renewable_ratio) * random.uniform(0.8, 1.2)
