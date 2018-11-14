@@ -90,12 +90,14 @@ def getCurrentEnergy():
     n_val = len(ja[0]['values'])
     if n_pt == 0:
         return formatErrorResponse(3, "energy/current: no values returned")
-    for i_val in range(0, n_val - 1):
+    for i_val in range(0, n_val):
         je = {}
         je['dt'] = ja[0]['values'][i_val]['end_date']
         je['total'] = 0
-        for i_pt in range(0, n_pt - 1):
+        for i_pt in range(0, n_pt):
             pt = ja[i_pt]
+            if pt['production_type'] == "TOTAL":
+                continue
             pc = getProductionCategory(pt['production_type'])
             val = pt['values'][i_val]['value']
             if pc not in je:
@@ -104,7 +106,6 @@ def getCurrentEnergy():
             je['total'] += val
         jr.append(je)
     jo = jr
-    jr = ''
     for je in jo:
         m = updateEnergy(je)
     s = EnergyMeasureSerializer(m)
