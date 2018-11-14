@@ -8,6 +8,7 @@
 #define DATA_API_PORT  80
 #define DATA_API_URL   "/data/v1/combined/"
 
+#define DATA_API_TIMEOUT  9000
 
 data_t data[DATA_COUNT];
 
@@ -56,7 +57,7 @@ bool fetchData(int when) {
   bool status = false;
   HTTPClient httpClient;
 
-  httpClient.setTimeout(5000);
+  httpClient.setTimeout(DATA_API_TIMEOUT);
 
   String url = String(DATA_API_URL) + String(data_when_lookup[when]);
   if (!httpClient.begin(DATA_API_HOST, DATA_API_PORT, url.c_str())) {
