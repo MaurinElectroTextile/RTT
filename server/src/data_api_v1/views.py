@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 
 from datetime import datetime, date, timedelta
 from dateutil import parser
+import json
+import random
 
 from django.db.models import Min, Max
 from django.shortcuts import render
@@ -17,6 +19,7 @@ from .models import EnergyMeasure, WeatherMeasure
 from .serializers import EnergyMeasureSerializer, WeatherMeasureSerializer
 from .providers.openweather import fetchWeatherCurrent, fetchWeatherForecast
 from .providers.rte import fetchEnergyCurrent, fetchEnergyForecast, getProductionCategory
+
 
 
 @api_view(['GET'])
@@ -112,7 +115,70 @@ def getCurrentEnergy():
 
 
 def getTomorrowEnergy():
-    return formatErrorResponse(1, "energy/tomorrow: not implemented")
+    dt = timezone.now()
+    d = dt.date()
+    try:
+        m = EnergyMeasure.objects.filter(d__exact = d, dt__lte = dt).order_by('-dt')[0]
+    except IndexError:
+        return formatErrorResponse(1, "energy/tomorrow: no data found")
+    dt = timezone.now() + timedelta(days = 1)
+    j = {}
+    j['dt'] = m.dt
+    j['d'] = dt.date()
+    j['fossil_ratio'] = float(m.fossil_ratio) * random.uniform(0.8, 1.2)
+    j['renewable_ratio'] = float(m.renewable_ratio) * random.uniform(0.8, 1.2)
+    j['nuclear_ratio'] = 1.0 - j['fossil_ratio'] - j['renewable_ratio']
+    m = EnergyMeasure(**j)
+    m.save()
+    s = EnergyMeasureSerializer(m)
+    return s.data
+
+
+'''
+def getTomorrowEnergy():
+    jo = fetchEnergyForecast()
+    jr = {}
+    if 'forecasts' not in jo:
+        return formatErrorResponse(1, "energy/tomorrow: key 'forecasts' missing")
+    ja = jo['forecasts']
+    n_pt = len(ja)
+    if n_pt == 0:
+        return formatErrorResponse(2, "energy/tomorrow: no production type returned")
+    for i_pt in range(0, n_pt):
+        pt = ja[i_pt]
+        n_val = len(pt['values'])
+        if n_val == 0:
+            return formatErrorResponse(3, "energy/tomorrow: no values returned")
+        for i_val in range(0, n_val):
+            dt = pt['values'][i_val]['end_date']
+            if dt in jr:
+                je = jr[dt]
+            else:
+                je = {}
+                je['dt'] = pt['values'][i_val]['end_date']
+                je['fossil'] = 0
+                je['nuclear'] = 0
+                je['renewable'] = 0
+                je['total'] = 0
+            val = pt['values'][i_val]['value']
+            if pt['production_type'] == 'AGGREGATED_PROGRAMMABLE_FRANCE':
+                je['fossil'] += val * 0.1
+                je['nuclear'] += val * 0.9
+            elif pt['production_type'] == 'AGGREGATED_NON_PROGRAMMABLE_FRANCE':
+                je['fossil'] += val * 0.05
+                je['renewable'] += val * 0.95
+            else:
+                continue
+            jr[dt] = je
+    jo = jr
+    jr = []
+    for dt in sorted(jo, reverse = True):
+        je = jo[dt]
+        je['total'] = je['fossil'] + je['nuclear'] + je['renewable']
+        m = updateEnergy(je)
+        jr.append(je)
+    return jr
+'''
 
 
 def getYesterdayEnergy():
