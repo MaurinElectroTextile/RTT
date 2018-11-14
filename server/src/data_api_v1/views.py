@@ -115,21 +115,30 @@ def getCurrentEnergy():
 
 
 def getTomorrowEnergy():
-    dt = timezone.now()
+    dt = timezone.now() + timedelta(days = 1)
     d = dt.date()
     try:
         m = EnergyMeasure.objects.filter(d__exact = d, dt__lte = dt).order_by('-dt')[0]
     except IndexError:
-        return formatErrorResponse(1, "energy/tomorrow: no data found")
-    dt = timezone.now() + timedelta(days = 1)
-    j = {}
-    j['dt'] = dt
-    j['d'] = dt.date()
-    j['fossil_ratio'] = float(m.fossil_ratio) * random.uniform(0.8, 1.2)
-    j['renewable_ratio'] = float(m.renewable_ratio) * random.uniform(0.8, 1.2)
-    j['nuclear_ratio'] = 1.0 - j['fossil_ratio'] - j['renewable_ratio']
-    m = EnergyMeasure(**j)
-    m.save()
+        dt = timezone.now()
+        d = dt.date()
+        try:
+            m = EnergyMeasure.objects.filter(d__exact = d, dt__lte = dt).order_by('-dt')[0]
+        except IndexError:
+            return formatErrorResponse(1, "energy/tomorrow: no data found")
+        dt = m.dt + timedelta(days = 1)
+        try:
+            EnergyMeasure.objects.filter(d__exact = d, dt__lte = dt).order_by('-dt')[0]
+        except IndexError:
+            return formatErrorResponse(1, "energy/tomorrow: no data found")
+        j = {}
+        j['dt'] = dt
+        j['d'] = dt.date()
+        j['fossil_ratio'] = float(m.fossil_ratio) * random.uniform(0.8, 1.2)
+        j['renewable_ratio'] = float(m.renewable_ratio) * random.uniform(0.8, 1.2)
+        j['nuclear_ratio'] = 1.0 - j['fossil_ratio'] - j['renewable_ratio']
+        m = EnergyMeasure(**j)
+        m.save()
     s = EnergyMeasureSerializer(m)
     return s.data
 
