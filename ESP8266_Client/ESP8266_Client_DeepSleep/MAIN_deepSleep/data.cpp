@@ -42,9 +42,11 @@ bool parseData(data_t *data_p, String& payload) {
     data_p->weather.temp_min = root["data"]["weather"]["temp_min"];
     data_p->weather.temp_max = root["data"]["weather"]["temp_max"];
     data_p->weather.cond_id = root["data"]["weather"]["cond_id"];
+    // data_p->weather.cond_id = root["data"]["weather"]["clouds"]; // TODO : clouds
+
     return true;
   } else {
-    Serial.println("jsonBuffer.parseObject failed");
+    Serial.println(F("jsonBuffer.parseObject failed"));
   }
   return false;
 }
@@ -58,7 +60,7 @@ bool fetchData(int when) {
 
   String url = String(DATA_API_URL) + String(data_when_lookup[when]);
   if (!httpClient.begin(DATA_API_HOST, DATA_API_PORT, url.c_str())) {
-    Serial.println("ERROR: HTTPClient.begin");
+    Serial.println(F("ERROR: HTTPClient.begin"));
     return false;
   }
   Serial.println("OK: HTTPClient.begin");
@@ -66,14 +68,15 @@ bool fetchData(int when) {
   int httpCode = httpClient.GET();
   if (httpCode > 0) {
     String payload = httpClient.getString();
-    Serial.println("fetchData: payload: " + payload);
+    Serial.print("fetchData: payload: ");
+    Serial.println(payload);
     status = parseData(data_p, payload);
     if (status) {
       printData(data_p);
     }
   }
   else {
-    Serial.printf("[HTTP] connection failed: %s\n", httpClient.errorToString(httpCode).c_str());
+    Serial.printf("[HTTP] connection failed: %s\n"), httpClient.errorToString(httpCode).c_str();
   }
   httpClient.end();
   return status;

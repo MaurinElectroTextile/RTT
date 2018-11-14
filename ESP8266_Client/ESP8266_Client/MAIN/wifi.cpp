@@ -4,8 +4,8 @@
 
 #define WIFI_DEBUG  1
 
-#define WIFI_SSID     "Chevrette"
-#define WIFI_PWD      "ch0c0latchienjaune"
+#define WIFI_SSID     "A10"
+#define WIFI_PWD      "poipoipoi"
 
 
 bool wifiSetup(void) {

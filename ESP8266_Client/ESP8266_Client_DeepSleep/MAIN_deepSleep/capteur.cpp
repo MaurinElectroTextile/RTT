@@ -10,26 +10,16 @@
 #define SLAVE_ADDR    0x27
 
 
-bool getMode = false;
-
-
-void tapSensRequestMode(void) {
-  getMode = true;
-}
-
-int tapSens(void) {
-  if (getMode) {
-    getMode = false;
-    Wire.requestFrom(SLAVE_ADDR, 1); // request one byte from slave
-    while (Wire.available()) {
-      return Wire.read();
-    }
+int tapSensRequest(void) {
+  Wire.requestFrom(SLAVE_ADDR, 1); // request one byte from slave
+  while (Wire.available()) {
+    uint8_t incomingByte= Wire.read();
+    Serial.printf("Request : %d\r\n", incomingByte);
+    return incomingByte;
   }
   return 0;
 }
 
 void tapSensInit(void) {
-  pinMode(REQUEST_PIN, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(REQUEST_PIN), tapSensRequestMode, FALLING);
   Wire.begin(SDA_PIN, SCL_PIN);
 }

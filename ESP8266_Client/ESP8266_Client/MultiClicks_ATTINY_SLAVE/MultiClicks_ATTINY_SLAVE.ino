@@ -1,9 +1,10 @@
-/* PiezoHits & ATTiny-DIGISPARK
+/* tapSens & ATTiny-DIGISPARK
 
   https://www.youtube.com/watch?v=ZDDcz9buKgM
 
   DIGISPARK slave
-  Sample a pezo sensor and send char to Arduino NodeMCU master.
+  Flash with Digispark (1mhz - No USB).
+  Sample a "pezo sensor" and send hits count to NodeMCU master.
 
  ** UNDER MACKINTOSH YOU WILL NEED A USB HUB TO PROGRAM THE DIGISPARK BOARD! **
   Instaling Digispark support for Arduino
@@ -18,9 +19,9 @@
     Pin 4 → PWM, Analog (also used for USB- when USB is in use)
     Pin 5 → Analog In
 
-  Single click -> send char 'A'
-  Double click -> send char 'B'
-  Triple click -> send char 'C'
+  Single click -> send int '1'
+  Double click -> send int '2'
+  Triple click -> send int '3'
 */
 
 #include <elapsedMillis.h>        // Library to take care of the timer overflow
@@ -31,8 +32,7 @@ elapsedMillis timer;
 #define I2C_SLAVE_ADDR      0x27  // I2C slave address
 
 #define PIEZO_PIN_INPUT     1     // Piezo input PIN P3
-#define CALL_PIN            4     // Pin to call (wake up) the Master     
-
+#define CALL_PIN            4     // Pin to call the NodeMCU-Master conneacted to NodeMCU D4_PIN
 #define THRESHOLD           100   // Threshold for the piezo analog readings
 #define DEBOUNCE_TIME       50    // Debounce time to avoid parasitics impuls
 #define TIME_OUT            300   // Timeout to output the hits sum   
@@ -41,8 +41,6 @@ boolean piezoState = false;
 boolean lastPiezoState = false;
 uint8_t hitsSum = 0;
 uint8_t hitsCount = 0;
-
-byte incomingByte = 0;
 
 void requestEvent() {
   TinyWireS.send(hitsCount);
@@ -54,9 +52,9 @@ void setup() {
 
   pinMode(PIEZO_PIN_INPUT, INPUT);
 
-  // pinMode(CALL_PIN, INPUT_PULLUP); // NOT WORKING!?
+  // pinMode(CALL_PIN, INPUT_PULLUP); // DO NOT WORKI!?
   pinMode(CALL_PIN, OUTPUT);
-  digitalWrite(CALL_PIN, HIGH);
+  digitalWrite(CALL_PIN, LOW);
 
   TinyWireS.begin(I2C_SLAVE_ADDR);
   TinyWireS.onRequest(requestEvent);
@@ -85,12 +83,12 @@ void loop() {
     }
   }
   // If the button released state is stable, report number of clicks and start new cycle
-  if ( timer > TIME_OUT && hitsSum != 0 ) {
+  if ( timer > TIME_OUT && hitsSum != 0 && hitsSum < 4) {
     hitsCount = hitsSum;
     hitsSum = 0;
-    digitalWrite(CALL_PIN, LOW);      // Call the Master (Wake up!)
-    // delayMicroseconds(100);        // Call the Master (Wake up!)
-    // digitalWrite(CALL_PIN, HIGH);  // Call the Master (Wake up!)
+    digitalWrite(CALL_PIN, LOW); // Call the Master
+  } else if (hitsSum > 3) {
+    hitsSum = 0;
   }
   lastPiezoState = piezoState;
 }

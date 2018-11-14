@@ -6,22 +6,29 @@
 
 #define SLEEP
 
+int taps = 0;
+
 /////////////////////////// SETUP
 void setup() {
   Serial.begin(115200);
+  /* Initialize GxEPD library */
+  displayInit();
+
+  Draw_loadingIcon();
 
   if (!wifiSetup()) {
     while (1);
   }
 
-  /* Initialize GxEPD library */
-  displayInit();
-
   /* Initialize NTPClient library */
   timeClientBegin();
-  timeClientUpdate();
 
+  /* Initialize tapSens sensor communication module */
   tapSensInit();
+
+  /* Request taps count from extarnal MCU (Digispark-ATTiny85) */
+  taps = tapSensRequest();
+  // delay(100);
 }
 
 /////////////////////////// LOOP
@@ -29,7 +36,6 @@ void loop() {
   bool updateNeeded = false;
   int day_delta = 0;
   int when = -1;
-  int taps = tapSens();
 
   if (Serial.available()) {
     taps = Serial.parseInt();
@@ -38,6 +44,10 @@ void loop() {
     }
   }
   switch (taps) {
+    case 0:
+      //Serial.println("GO_TO_SLEEP");
+      //ESP.deepSleep(0);
+      break;
     case 1:
       when = DATA_TODAY;
       day_delta = 0;
@@ -62,5 +72,7 @@ void loop() {
     Draw_loadingIcon();
     fetchData(when);
     Draw_EPD(when);
+    Serial.println("GO_TO_SLEEP");
+    ESP.deepSleep(0);
   }
 }

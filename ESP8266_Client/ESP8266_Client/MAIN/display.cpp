@@ -39,9 +39,7 @@
 #define ENERGY_ICON_WIDTH   20
 #define ENERGY_ICON_HEIGHT  22
 
-
-#define BARGRAPH_STEPS  20
-
+#define BARGRAPH_STEPS      20
 
 GxIO_Class io(SPI, CS_PIN, DC_PIN, RST_PIN);
 GxEPD_Class display(io, RST_PIN, BUSY_PIN);
@@ -128,7 +126,7 @@ const uint8_t *getWeatherBitmap(int conditionId) {
 void Draw_loadingIcon(void) {
   /* Draw energy bitmap images */
   display.fillScreen(GxEPD_BLACK);
-  display.drawBitmap(hourglass, 14, 100, 100, 100, GxEPD_BLACK, GxEPD::bm_default);
+  display.drawBitmap(HOURGLASS, 14, 100, 100, 100, GxEPD_BLACK, GxEPD::bm_default);
   display.updateWindow(0, 0, display.width(), display.height());
 }
 

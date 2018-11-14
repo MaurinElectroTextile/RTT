@@ -16,6 +16,6 @@ extern const unsigned char NUCLEAR[];
 extern const unsigned char RENEWABLE[];
 extern const unsigned char LOCALE[];
 
-extern const unsigned char hourglass [];
+extern const unsigned char HOURGLASS[];
 
 #endif /*__IMAGEDATA_H__*/
